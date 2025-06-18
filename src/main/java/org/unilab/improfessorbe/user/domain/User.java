@@ -3,6 +3,8 @@ package org.unilab.improfessorbe.user.domain;
 import org.unilab.improfessorbe.config.domain.BaseEntity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,6 +33,7 @@ public class User extends BaseEntity {
 
 	private Integer recommendCount;
 
+	@Enumerated(value = EnumType.STRING)
 	private Role role;
 
 	enum Role {
