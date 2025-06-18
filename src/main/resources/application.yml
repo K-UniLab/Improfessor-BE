@@ -1,0 +1,19 @@
+spring:
+  config:
+    import: application-local.yml
+  datasource:
+    url: jdbc:mysql://localhost:3306/improfessor?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    org.hibernate.sql: debug
