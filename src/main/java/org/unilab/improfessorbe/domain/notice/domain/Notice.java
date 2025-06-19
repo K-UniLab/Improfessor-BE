@@ -1,6 +1,6 @@
-package org.unilab.improfessorbe.notice.domain;
+package org.unilab.improfessorbe.domain.notice.domain;
 
-import org.unilab.improfessorbe.config.domain.BaseEntity;
+import org.unilab.improfessorbe.global.common.BaseEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

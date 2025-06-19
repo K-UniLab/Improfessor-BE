@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.config.domain;
+package org.unilab.improfessorbe.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

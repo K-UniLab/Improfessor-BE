@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.global.domain;
+package org.unilab.improfessorbe.global.common;
 
 import java.time.LocalDateTime;
 
