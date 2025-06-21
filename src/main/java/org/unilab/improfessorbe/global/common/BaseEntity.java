@@ -1,9 +1,8 @@
-package org.unilab.improfessorbe.config.domain;
+package org.unilab.improfessorbe.global.common;
 
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.MappedSuperclass;

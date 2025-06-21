@@ -1,6 +1,6 @@
-package org.unilab.improfessorbe.user.domain;
+package org.unilab.improfessorbe.domain.user.domain;
 
-import org.unilab.improfessorbe.config.domain.BaseEntity;
+import org.unilab.improfessorbe.global.common.BaseEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
