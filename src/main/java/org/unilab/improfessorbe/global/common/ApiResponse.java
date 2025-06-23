@@ -1,6 +1,8 @@
 package org.unilab.improfessorbe.global.common;
 
+import lombok.Getter;
 
+@Getter
 public class ApiResponse<T> {
 
 	private String status;
