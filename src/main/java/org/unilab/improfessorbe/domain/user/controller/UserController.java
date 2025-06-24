@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
+import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.dto.response.EmailVerificationRequest;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
@@ -37,6 +38,14 @@ public class UserController {
 	){
 		EmailVerificationResponse emailVerificationResponse = userService.verifyEmail(emailVerificationRequest.getEmail(), emailVerificationRequest.getCode());
 		return ResponseEntity.ok(ApiResponse.success(emailVerificationResponse));
+	}
+
+	@PostMapping("/register")
+	public ResponseEntity<ApiResponse<Void>> register(
+		@RequestBody @Valid UserRegisterRequest userRegisterRequest
+	){
+		userService.register(userRegisterRequest);
+		return ResponseEntity.ok(ApiResponse.success());
 	}
 
 }

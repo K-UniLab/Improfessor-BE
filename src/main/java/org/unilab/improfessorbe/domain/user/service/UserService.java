@@ -3,15 +3,16 @@ package org.unilab.improfessorbe.domain.user.service;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
 import org.springframework.stereotype.Service;
 import org.unilab.improfessorbe.domain.user.domain.User;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
+import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 import org.unilab.improfessorbe.global.util.RedisUtil;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +26,6 @@ public class UserService {
 	private final RedisUtil redisUtil;
 
 	private final Long EXPIRATION = 10 * 60L;
-	private final ConfigurationPropertiesAutoConfiguration configurationPropertiesAutoConfiguration;
 
 	public void sendVerificationEmail(String email) {
 		validateDuplicateEmail(email);
@@ -63,6 +63,13 @@ public class UserService {
 
 	}
 
+	@Transactional
+	public void register(UserRegisterRequest userRegisterRequest) {
+		validateDuplicateNickname(userRegisterRequest.getNickname());
+		User user = UserRegisterRequest.toEntity(userRegisterRequest);
+		userRepository.save(user);
+	}
+
 
 	private void validateDuplicateEmail(String email) {
 		Optional<User> user = userRepository.findByEmail(email);
@@ -70,5 +77,13 @@ public class UserService {
 			throw new CustomException(ErrorCode.EMAIL_DUPLICATION);
 		}
 	}
+
+	private void validateDuplicateNickname(String nickname) {
+		Optional<User> user = userRepository.findByNickname(nickname);
+		if(user.isPresent()) {
+			throw new CustomException(ErrorCode.NICKNAME_DUPLICATION);
+		}
+	}
+
 
 }
