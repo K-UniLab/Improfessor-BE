@@ -73,8 +73,9 @@ public class UserService {
 
 	@Transactional
 	public void updateUser(UserUpdateRequest userUpdateRequest) {
-		User user = userRepository.findById(userUpdateRequest.getId())
+		User user = userRepository.findByUserIdAndDeletedAtIsNull(userUpdateRequest.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
 		user.updateUser(
 			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor(),
 			userUpdateRequest.getFreeCount(), userUpdateRequest.getRecommendCount()
@@ -83,7 +84,7 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public UserResponse getUser(Long userId) {
-		User user = userRepository.findById(userId)
+		User user = userRepository.findByUserIdAndDeletedAtIsNull(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		return UserResponse.toEntity(user);
@@ -91,21 +92,21 @@ public class UserService {
 
 	@Transactional
 	public void deleteUser(Long userId) {
-		User user = userRepository.findById(userId)
+		User user = userRepository.findByUserIdAndDeletedAtIsNull(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		user.markAsDeleted();
 	}
 
 
 	private void validateDuplicateEmail(String email) {
-		Optional<User> user = userRepository.findByEmail(email);
+		Optional<User> user = userRepository.findByEmailAndDeletedAtIsNull(email);
 		if(user.isPresent()) {
 			throw new CustomException(ErrorCode.EMAIL_DUPLICATION);
 		}
 	}
 
 	private void validateDuplicateNickname(String nickname) {
-		Optional<User> user = userRepository.findByNickname(nickname);
+		Optional<User> user = userRepository.findByNicknameAndDeletedAtIsNull(nickname);
 		if(user.isPresent()) {
 			throw new CustomException(ErrorCode.NICKNAME_DUPLICATION);
 		}

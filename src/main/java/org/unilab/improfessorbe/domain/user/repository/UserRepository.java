@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.unilab.improfessorbe.domain.user.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<User> findByEmail(String email);
+	Optional<User> findByUserIdAndDeletedAtIsNull(Long id);
 
-	Optional<User> findByNickname(String nickname);
+	Optional<User> findByEmailAndDeletedAtIsNull(String email);
+
+	Optional<User> findByNicknameAndDeletedAtIsNull(String nickname);
 }
