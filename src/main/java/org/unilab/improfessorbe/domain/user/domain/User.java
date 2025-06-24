@@ -55,5 +55,13 @@ public class User extends BaseEntity {
 		return new User(nickname, email, password, university, major, freeCount, recommendCount);
 	}
 
+	public void updateUser(String password, String university, String major, Integer freeCount, Integer recommendCount){
+		this.password = password;
+		this.university = university;
+		this.major = major;
+		this.freeCount = freeCount;
+		this.recommendCount = recommendCount;
+	}
+
 
 }

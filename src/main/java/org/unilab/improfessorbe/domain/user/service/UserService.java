@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.unilab.improfessorbe.domain.user.domain.User;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
 import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
+import org.unilab.improfessorbe.domain.user.dto.request.UserUpdateRequest;
 import org.unilab.improfessorbe.domain.user.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
@@ -68,6 +69,16 @@ public class UserService {
 		validateDuplicateNickname(userRegisterRequest.getNickname());
 		User user = UserRegisterRequest.toEntity(userRegisterRequest);
 		userRepository.save(user);
+	}
+
+	@Transactional
+	public void updateUser(UserUpdateRequest userUpdateRequest) {
+		User user = userRepository.findById(userUpdateRequest.getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		user.updateUser(
+			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor(),
+			userUpdateRequest.getFreeCount(), userUpdateRequest.getRecommendCount()
+		);
 	}
 
 
