@@ -13,8 +13,7 @@ import org.unilab.improfessorbe.domain.user.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 import org.unilab.improfessorbe.global.util.RedisUtil;
-
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -82,11 +81,19 @@ public class UserService {
 		);
 	}
 
+	@Transactional(readOnly = true)
 	public UserResponse getUser(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		return UserResponse.toEntity(user);
+	}
+
+	@Transactional
+	public void deleteUser(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		user.markAsDeleted();
 	}
 
 
@@ -103,6 +110,4 @@ public class UserService {
 			throw new CustomException(ErrorCode.NICKNAME_DUPLICATION);
 		}
 	}
-
-
 }
