@@ -8,6 +8,7 @@ import org.unilab.improfessorbe.domain.user.domain.User;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
 import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserUpdateRequest;
+import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
@@ -79,6 +80,13 @@ public class UserService {
 			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor(),
 			userUpdateRequest.getFreeCount(), userUpdateRequest.getRecommendCount()
 		);
+	}
+
+	public UserResponse getUser(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		return UserResponse.toEntity(user);
 	}
 
 

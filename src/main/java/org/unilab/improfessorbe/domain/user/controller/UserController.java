@@ -3,6 +3,7 @@ package org.unilab.improfessorbe.domain.user.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationRespons
 import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserUpdateRequest;
 import org.unilab.improfessorbe.domain.user.dto.response.EmailVerificationRequest;
+import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
 
@@ -53,9 +55,17 @@ public class UserController {
 	@PatchMapping("/me")
 	public ResponseEntity<ApiResponse<Void>> updateUser(
 		@RequestBody @Valid UserUpdateRequest userUpdateRequest
-	){
+	) {
 		userService.updateUser(userUpdateRequest);
 		return ResponseEntity.ok(ApiResponse.success());
+	}
+
+	@GetMapping("/{userId}")
+	public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+		@PathVariable Long userId
+	){
+		UserResponse userResponse = userService.getUser(userId);
+		return ResponseEntity.ok(ApiResponse.success(userResponse));
 	}
 
 }
