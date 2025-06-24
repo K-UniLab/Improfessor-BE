@@ -14,7 +14,7 @@ public class NoticeRequest {
 	private String content;
 
 	public static Notice toEntity(NoticeRequest noticeRequest) {
-		return Notice.create(
+		return Notice.createNotice(
 			noticeRequest.title,
 			noticeRequest.content
 		);

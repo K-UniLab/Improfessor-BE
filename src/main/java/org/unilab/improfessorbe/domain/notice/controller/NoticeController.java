@@ -29,6 +29,16 @@ public class NoticeController {
 		noticeService.createNotice(userId, noticeRequest);
 		return ResponseEntity.ok(ApiResponse.success());
 	}
+
+	@PatchMapping("/{noticeId}")
+	public ResponseEntity<ApiResponse<Void>> updateNotice(
+		@PathVariable Long noticeId,
+		@PathParam("userId") Long userId,
+		@RequestBody NoticeRequest noticeRequest
+	) {
+		noticeService.updateNotice(noticeId, userId, noticeRequest);
+		return ResponseEntity.ok(ApiResponse.success());
+	}
 	
 
 }

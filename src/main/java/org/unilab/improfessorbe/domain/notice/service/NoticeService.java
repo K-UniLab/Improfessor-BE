@@ -29,6 +29,13 @@ public class NoticeService {
 		noticeRepository.save(notice);
 	}
 
+	@Transactional
+	public void updateNotice(Long noticeId, Long userId, NoticeRequest noticeRequest) {
+		validateAdminAccess(userId);
+		Notice notice = noticeRepository.findById(noticeId)
+			.orElseThrow( () -> new CustomException(ErrorCode.ELEMENT_NOT_FOUND));
+		notice.updateNotice(noticeRequest.getTitle(), noticeRequest.getContent());
+	}
 
 	private void validateAdminAccess(Long userId) {
 		Optional<User> user = userRepository.findByUserIdAndDeletedAtIsNull(userId);
@@ -37,4 +44,6 @@ public class NoticeService {
 			if(user.get().getRole()==User.Role.USER) throw new CustomException(ErrorCode.FORBIDDEN_ACCESS);
 		}
 	}
+
+
 }
