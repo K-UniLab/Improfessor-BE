@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.improfessorbe.domain.notice.domain.Notice;
 import org.unilab.improfessorbe.domain.notice.dto.request.NoticeRequest;
+import org.unilab.improfessorbe.domain.notice.dto.response.NoticeResponse;
 import org.unilab.improfessorbe.domain.notice.repository.NoticeRepository;
 import org.unilab.improfessorbe.domain.user.domain.User;
 import org.unilab.improfessorbe.domain.user.repository.UserRepository;
@@ -35,6 +36,13 @@ public class NoticeService {
 		Notice notice = noticeRepository.findById(noticeId)
 			.orElseThrow( () -> new CustomException(ErrorCode.ELEMENT_NOT_FOUND));
 		notice.updateNotice(noticeRequest.getTitle(), noticeRequest.getContent());
+	}
+
+	@Transactional(readOnly = true)
+	public NoticeResponse getNotice(Long noticeId) {
+		Notice notice = noticeRepository.findById(noticeId)
+			.orElseThrow( () -> new CustomException(ErrorCode.ELEMENT_NOT_FOUND));
+		return NoticeResponse.of(notice);
 	}
 
 	private void validateAdminAccess(Long userId) {
