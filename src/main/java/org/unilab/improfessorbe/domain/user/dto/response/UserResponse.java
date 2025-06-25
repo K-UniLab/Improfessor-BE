@@ -18,7 +18,7 @@ public class UserResponse {
 	private Integer recommendCount;
 	private User.Role role;
 
-	public static UserResponse toEntity(User user) {
+	public static UserResponse of(User user) {
 		return UserResponse.builder()
 			.userId(user.getUserId())
 			.nickname(user.getNickname())
