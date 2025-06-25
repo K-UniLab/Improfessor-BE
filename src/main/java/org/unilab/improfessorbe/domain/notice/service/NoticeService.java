@@ -1,5 +1,7 @@
 package org.unilab.improfessorbe.domain.notice.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -53,5 +55,9 @@ public class NoticeService {
 		}
 	}
 
-
+	public List<NoticeResponse> getNotices() {
+		List<Notice> notices = noticeRepository.findAll();
+		List<NoticeResponse> noticesResponse = notices.stream().map(NoticeResponse::of).toList();
+		return noticesResponse;
+	}
 }

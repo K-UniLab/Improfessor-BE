@@ -1,5 +1,7 @@
 package org.unilab.improfessorbe.domain.notice.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,6 +16,7 @@ import org.unilab.improfessorbe.domain.notice.service.NoticeService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
 
 import jakarta.websocket.server.PathParam;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -48,6 +51,12 @@ public class NoticeController {
 	){
 		NoticeResponse noticeResponse = noticeService.getNotice(noticeId);
 		return ResponseEntity.ok(ApiResponse.success(noticeResponse));
+	}
+
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<NoticeResponse>>> getNotices(){
+		List<NoticeResponse> noticeResponses = noticeService.getNotices();
+		return ResponseEntity.ok(ApiResponse.success(noticeResponses));
 	}
 	
 
