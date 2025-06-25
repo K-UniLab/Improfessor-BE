@@ -47,6 +47,13 @@ public class NoticeService {
 		return NoticeResponse.of(notice);
 	}
 
+	@Transactional(readOnly = true)
+	public List<NoticeResponse> getNotices() {
+		List<Notice> notices = noticeRepository.findAll();
+		List<NoticeResponse> noticesResponse = notices.stream().map(NoticeResponse::of).toList();
+		return noticesResponse;
+	}
+
 	private void validateAdminAccess(Long userId) {
 		Optional<User> user = userRepository.findByUserIdAndDeletedAtIsNull(userId);
 		if(!user.isPresent()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -55,9 +62,7 @@ public class NoticeService {
 		}
 	}
 
-	public List<NoticeResponse> getNotices() {
-		List<Notice> notices = noticeRepository.findAll();
-		List<NoticeResponse> noticesResponse = notices.stream().map(NoticeResponse::of).toList();
-		return noticesResponse;
-	}
+
+
+
 }
