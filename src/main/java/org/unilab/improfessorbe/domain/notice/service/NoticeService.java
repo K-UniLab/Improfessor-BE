@@ -40,6 +40,11 @@ public class NoticeService {
 		notice.updateNotice(noticeRequest.getTitle(), noticeRequest.getContent());
 	}
 
+	@Transactional
+	public void deleteNotice(Long noticeId) {
+		noticeRepository.deleteById(noticeId);
+	}
+
 	@Transactional(readOnly = true)
 	public NoticeResponse getNotice(Long noticeId) {
 		Notice notice = noticeRepository.findById(noticeId)
@@ -54,6 +59,7 @@ public class NoticeService {
 		return noticesResponse;
 	}
 
+
 	private void validateAdminAccess(Long userId) {
 		Optional<User> user = userRepository.findByUserIdAndDeletedAtIsNull(userId);
 		if(!user.isPresent()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -61,8 +67,6 @@ public class NoticeService {
 			if(user.get().getRole()==User.Role.USER) throw new CustomException(ErrorCode.FORBIDDEN_ACCESS);
 		}
 	}
-
-
 
 
 }

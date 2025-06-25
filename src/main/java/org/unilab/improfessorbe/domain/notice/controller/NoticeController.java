@@ -3,6 +3,7 @@ package org.unilab.improfessorbe.domain.notice.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,14 @@ public class NoticeController {
 		@RequestBody NoticeRequest noticeRequest
 	) {
 		noticeService.updateNotice(noticeId, userId, noticeRequest);
+		return ResponseEntity.ok(ApiResponse.success());
+	}
+
+	@DeleteMapping("/{noticeId}")
+	public ResponseEntity<ApiResponse<Void>> deleteNotice(
+		@PathVariable Long noticeId
+	){
+		noticeService.deleteNotice(noticeId);
 		return ResponseEntity.ok(ApiResponse.success());
 	}
 
