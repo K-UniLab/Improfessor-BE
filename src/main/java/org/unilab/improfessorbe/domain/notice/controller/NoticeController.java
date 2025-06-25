@@ -48,9 +48,10 @@ public class NoticeController {
 
 	@DeleteMapping("/{noticeId}")
 	public ResponseEntity<ApiResponse<Void>> deleteNotice(
-		@PathVariable Long noticeId
+		@PathVariable Long noticeId,
+		@PathParam("userId") Long userId
 	){
-		noticeService.deleteNotice(noticeId);
+		noticeService.deleteNotice(noticeId, userId);
 		return ResponseEntity.ok(ApiResponse.success());
 	}
 

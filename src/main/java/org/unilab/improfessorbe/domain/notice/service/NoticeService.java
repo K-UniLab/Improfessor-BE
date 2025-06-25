@@ -1,6 +1,5 @@
 package org.unilab.improfessorbe.domain.notice.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +14,6 @@ import org.unilab.improfessorbe.domain.user.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,7 +39,8 @@ public class NoticeService {
 	}
 
 	@Transactional
-	public void deleteNotice(Long noticeId) {
+	public void deleteNotice(Long noticeId, Long userId) {
+		validateAdminAccess(userId);
 		noticeRepository.deleteById(noticeId);
 	}
 
