@@ -10,7 +10,7 @@ import org.unilab.improfessorbe.global.exception.ErrorCode;
 @Service
 public class FileValidationService {
 
-	private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+	private static final long MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 	private static final Set<String> SUPPORTED_EXTENSIONS = Set.of("pdf", "ppt", "pptx");
 
 	public void validateFile(MultipartFile file) {
