@@ -23,27 +23,28 @@ public enum ErrorCode {
 
 	// Not Found
 	ELEMENT_NOT_FOUND("C301", "엔티티를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-	
+
 	// Internal Server Error
 	INTERNAL_SERVER_ERROR("C999", "서버 내부 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	EXTERNAL_SERVICE_ERROR("C901", "외부 서비스 연동 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
 	// User
 	USER_NOT_FOUND("U001", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-	EMAIL_DUPLICATION("U002", "이미 사용 중인 이메일입니다.", HttpStatus.CONFLICT), 
-	NICKNAME_DUPLICATION("U003", "이미 사용 중인 닉네임입니다.", HttpStatus.CONFLICT), 
+	EMAIL_DUPLICATION("U002", "이미 사용 중인 이메일입니다.", HttpStatus.CONFLICT),
+	NICKNAME_DUPLICATION("U003", "이미 사용 중인 닉네임입니다.", HttpStatus.CONFLICT),
 	PASSWORD_MISMATCH("U004", "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
-	USER_UPDATE_FAILED("U005", "사용자 정보 수정에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR), 
+	USER_UPDATE_FAILED("U005", "사용자 정보 수정에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	USER_DEACTIVATION_FAILED("U006", "회원 탈퇴 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-	
+
 	// Problem
-	PROBLEM_CREATION_FAILED("P001", "문제 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR), 
-	FILE_UPLOAD_FAILED("P002", "파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR), 
-	FILE_TOO_LARGE("P003", "파일 크기가 너무 큽니다.", HttpStatus.BAD_REQUEST), 
+	PROBLEM_CREATION_FAILED("P001", "문제 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	FILE_UPLOAD_FAILED("P002", "파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	FILE_TOO_LARGE("P003", "파일 크기가 너무 큽니다.", HttpStatus.BAD_REQUEST),
 	UNSUPPORTED_FILE_TYPE("P004", "지원하지 않는 파일 형식입니다.", HttpStatus.BAD_REQUEST),
-	
-	; 
-	
+	EMPTY_FILE("P005", "업로드된 파일이 비어있습니다.", HttpStatus.BAD_REQUEST),
+
+	;
+
 	private final HttpStatus status;
 	private final String code;
 	private String message;
