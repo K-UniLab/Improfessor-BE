@@ -87,7 +87,7 @@ public class UserService {
 		User user = userRepository.findByUserIdAndDeletedAtIsNull(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		return UserResponse.toEntity(user);
+		return UserResponse.of(user);
 	}
 
 	@Transactional
