@@ -33,7 +33,17 @@ spring:
           starttls:
             enable: true
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
 
 logging:
   level:
     org.hibernate.sql: debug
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY:your-gemini-api-key-here}
+    timeout: 30
+    base-url: https://generativelanguage.googleapis.com
