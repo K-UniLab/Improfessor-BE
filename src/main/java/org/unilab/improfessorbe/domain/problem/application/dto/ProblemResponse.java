@@ -10,14 +10,14 @@ import lombok.Getter;
 public class ProblemResponse {
 
 	//제목, 내용, 풀이과정, 정답
-	private String title;
+	private String number;
 	private String content;
 	private String description;
 	private String answer;
 
 	public static ProblemResponse toResponse(Problem problem) {
 		return ProblemResponse.builder()
-			.title(problem.getTitle())
+			.number(problem.getNumber())
 			.content(problem.getContent())
 			.description(problem.getDescription())
 			.answer(problem.getAnswer())
