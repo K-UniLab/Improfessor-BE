@@ -1,14 +1,14 @@
-package org.unilab.improfessorbe.domain.problem.application.service;
+package org.unilab.improfessorbe.domain.parse.input.validation;
 
 import java.util.Set;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 
-@Service
-public class FileValidationService {
+@Component
+public class FileValidator {
 
 	private static final long MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 	private static final Set<String> SUPPORTED_EXTENSIONS = Set.of("pdf", "ppt", "pptx");
