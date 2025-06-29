@@ -48,20 +48,18 @@ public class UserService {
 	}
 
 	public EmailVerificationResponse verifyEmail(String email, String code) {
-
-		String result = redisUtil.getData(email);
-
-		if(result == null) {
-			return EmailVerificationResponse.builder().verified(false).message("인증번호가 만료되었습니다. 다시 시도해주세요.").build();
-		}
-
-		if(result.equals(code)) {
-			return EmailVerificationResponse.builder().verified(true).message("인증 성공하였습니다.").build();
+		if(redisUtil.existData(email)){
+			String result = redisUtil.getData(email);
+			if(result.equals(code)){
+				return EmailVerificationResponse.builder().verified(true).message("인증 성공하였습니다.").build();
+			}
+			else{
+				return EmailVerificationResponse.builder().verified(false).message(result).message("인증번호가 일치하지 않습니다").build();
+			}
 		}
 		else{
-			return EmailVerificationResponse.builder().verified(false).message(result).message("인증번호가 일치하지 않습니다").build();
+			return EmailVerificationResponse.builder().verified(false).message("인증번호가 만료되었습니다. 다시 시도해주세요.").build();
 		}
-
 	}
 
 	@Transactional
