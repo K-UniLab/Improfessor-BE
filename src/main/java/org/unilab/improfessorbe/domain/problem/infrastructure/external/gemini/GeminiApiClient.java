@@ -28,7 +28,14 @@ public class GeminiApiClient {
 
 	// 문제 생성 프롬프트 템플릿
 	private static final String PROBLEM_GENERATION_PROMPT = """ 
-		다음을 활용해서 대학교 시험 문제를 생성해줘. 문제 번호, 문제 내용, 문제 답, 풀이 과정 순으로 적어줘. 요구사항: - 문제 번호, 문제 내용, 풀이 과정, 답 순으로 적어줘. - 문제를 제외한 어떠한 추가적인 말도 하지마. 다음 텍스트에서 중요한 개념을 위주로 문제 만들어줘: %s 다음 텍스트와 비슷한 문제 형식으로 만들어줘: %s
+		다음을 참고해서 JSON 형식으로 대학교 시험 문제 5개를 생성하세요.
+		   [{"number":1,"content":"문제내용","description":"풀이과정","answer":"답"},{"number":2,"content":"문제내용","description":"풀이과정","answer":"답"}]
+		   규칙:
+		   - JSON 배열만 출력 (다른 텍스트 금지)
+		   - 모든 값은 한 줄로 작성 (줄바꿈 금지)
+		   - 따옴표 안에서 따옴표 사용 금지
+		- 다음 텍스트에서 중요한 개념 위주로 문제를 만드시오: %s
+		- 다음 텍스트와 비슷한 문제 형식, (객관식, 주관식, 단답식) 비율으로 만드시오: %s
 		""";
 
 	public String generateProblems(String conceptText, String formatText) {
