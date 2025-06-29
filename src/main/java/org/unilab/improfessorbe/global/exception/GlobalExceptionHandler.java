@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
-		log.error("Exception : {}", e.getMessage());
+		log.error("Exception : {}", e);
 		ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
 		return ResponseEntity.status(errorCode.getStatus())
 			.body(ApiResponse.error(errorCode.getCode(), errorCode.getMessage()));

@@ -1,8 +1,8 @@
 spring:
-  config:
-    import: application-local.yml
+  profiles:
+    active: local
   datasource:
-    url: jdbc:mysql://localhost:3306/improfessor?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/improfessor?allowPublicKeyRetrieval=true&useSSL=false
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,6 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
   data:
     redis:
@@ -22,16 +23,8 @@ spring:
       port: 6379
 
   mail:
-    host: smtp.gmail.com
-    port: 587
     username: ${EMAIL_ADDRESS}
     password: ${EMAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
   servlet:
     multipart:
