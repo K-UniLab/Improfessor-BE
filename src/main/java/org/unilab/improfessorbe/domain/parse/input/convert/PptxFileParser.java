@@ -9,10 +9,14 @@ import org.apache.poi.xslf.usermodel.XSLFTextShape;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class PptxFileParser implements FileParser {
 
-	private static final String SLIDE_SEPARATOR = "\n--- 슬라이드 구분 ---\n\n";
+	private static final String SLIDE_SEPARATOR = "\n\n=== 슬라이드 구분 ===\n\n";
+	private final TextPreprocessor textPreprocessor;
 
 	@Override
 	public boolean supports(String extension) {
@@ -25,20 +29,31 @@ public class PptxFileParser implements FileParser {
 
 		try (XMLSlideShow ppt = new XMLSlideShow(file.getInputStream())) {
 			for (XSLFSlide slide : ppt.getSlides()) {
-				extractSlideText(slide, content);
-				content.append(SLIDE_SEPARATOR);
+				String slideText = extractSlideText(slide);
+				if (!slideText.trim().isEmpty()) {
+					content.append(slideText).append(SLIDE_SEPARATOR);
+				}
 			}
 		}
 
-		return content.toString();
+		String rawContent = content.toString();
+		String cleanedContent = textPreprocessor.cleanSlideContent(rawContent, SLIDE_SEPARATOR);
+		return textPreprocessor.preprocess(cleanedContent);
 	}
 
-	private void extractSlideText(XSLFSlide slide, StringBuilder content) {
+	private String extractSlideText(XSLFSlide slide) {
+		StringBuilder slideContent = new StringBuilder();
+
 		for (XSLFShape shape : slide.getShapes()) {
 			if (shape instanceof XSLFTextShape) {
 				XSLFTextShape textShape = (XSLFTextShape)shape;
-				content.append(textShape.getText()).append("\n");
+				String text = textShape.getText();
+				if (text != null && !text.trim().isEmpty()) {
+					slideContent.append(text.trim()).append("\n");
+				}
 			}
 		}
+
+		return slideContent.toString().trim();
 	}
 }
