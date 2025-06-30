@@ -85,6 +85,14 @@ public class UserController {
 		return null;
 	}
 
+	@PostMapping("/refresh-token")
+	public ResponseEntity<ApiResponse<UserLoginResponse>> refreshToken(
+		HttpServletRequest request
+	) {
+		String refreshToken = extractTokenFromRequest(request);
+		UserLoginResponse newTokens = userService.refreshToken(refreshToken);
+		return ResponseEntity.ok(ApiResponse.success(newTokens));
+	}
 
 	@PatchMapping("/me")
 	public ResponseEntity<ApiResponse<Void>> updateUser(

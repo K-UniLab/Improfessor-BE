@@ -128,6 +128,13 @@ public class UserService {
 		SecurityContextHolder.clearContext();
 	}
 
+	@Transactional
+	public UserLoginResponse refreshToken(String refreshToken) {
+		if(refreshToken == null)
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+		JwtToken newJwtToken = jwtTokenProvider.refreshToken(refreshToken);
+		return UserLoginResponse.of(newJwtToken);
+	}
 
 
 	@Transactional
