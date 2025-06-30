@@ -3,15 +3,25 @@ package org.unilab.improfessorbe.domain.user.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.unilab.improfessorbe.domain.user.domain.User;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
+import org.unilab.improfessorbe.domain.user.dto.request.UserLoginRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserUpdateRequest;
+import org.unilab.improfessorbe.domain.user.dto.response.UserLoginResponse;
 import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
+import org.unilab.improfessorbe.global.security.jwt.JwtToken;
+import org.unilab.improfessorbe.global.security.jwt.JwtTokenProvider;
 import org.unilab.improfessorbe.global.util.RedisUtil;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +35,12 @@ public class UserService {
 	private final EmailService emailService;
 	private final UserRepository userRepository;
 	private final RedisUtil redisUtil;
+	private final PasswordEncoder passwordEncoder;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final AuthenticationManager authenticationManager;
 
 	private final Long EXPIRATION = 10 * 60L;
+	private final Long REFRESH_TOKEN_EXPIRE_SECONDS = 7 * 24 * 60 * 60L;
 
 	public void sendVerificationEmail(String email) {
 		validateDuplicateEmail(email);
@@ -70,6 +84,27 @@ public class UserService {
 	}
 
 	@Transactional
+	public UserLoginResponse login(UserLoginRequest userLoginRequest) {
+		UsernamePasswordAuthenticationToken authenticationToken =
+			new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword());
+
+		try{
+			Authentication authentication  = authenticationManager.authenticate(authenticationToken);
+			JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+			redisUtil.setDataExpire(authentication.getName(), jwtToken.getRefreshToken(), REFRESH_TOKEN_EXPIRE_SECONDS);
+
+			return UserLoginResponse.of(jwtToken);
+		} catch (BadCredentialsException e){
+			log.error("login error: not valid password");
+			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
+		} catch (Exception e){
+			log.error("login error");
+			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
+		}
+	}
+
+
+	@Transactional
 	public void updateUser(UserUpdateRequest userUpdateRequest) {
 		User user = userRepository.findByUserIdAndDeletedAtIsNull(userUpdateRequest.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -95,7 +130,6 @@ public class UserService {
 		user.markAsDeleted();
 	}
 
-
 	private void validateDuplicateEmail(String email) {
 		Optional<User> user = userRepository.findByEmailAndDeletedAtIsNull(email);
 		if(user.isPresent()) {
@@ -109,4 +143,6 @@ public class UserService {
 			throw new CustomException(ErrorCode.NICKNAME_DUPLICATION);
 		}
 	}
+
+
 }

@@ -1,5 +1,6 @@
 package org.unilab.improfessorbe.domain.user.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
+import org.unilab.improfessorbe.domain.user.dto.request.UserLoginRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserUpdateRequest;
 import org.unilab.improfessorbe.domain.user.dto.response.EmailVerificationRequest;
+import org.unilab.improfessorbe.domain.user.dto.response.UserLoginResponse;
 import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
@@ -52,6 +55,15 @@ public class UserController {
 		userService.register(userRegisterRequest);
 		return ResponseEntity.ok(ApiResponse.success());
 	}
+
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<UserLoginResponse>> login(
+		@RequestBody @Valid UserLoginRequest userLoginRequest
+	) {
+		UserLoginResponse loginResponse = userService.login(userLoginRequest);
+		return ResponseEntity.ok(ApiResponse.success(loginResponse));
+	}
+
 
 	@PatchMapping("/me")
 	public ResponseEntity<ApiResponse<Void>> updateUser(
