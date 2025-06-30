@@ -17,6 +17,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_ACCESS("C101", "인증 정보가 유효하지 않습니다.", HttpStatus.UNAUTHORIZED),
 	TOKEN_EXPIRED("C102", "인증 토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
 	INVALID_TOKEN("C103", "유효하지 않은 인증 토큰입니다.", HttpStatus.UNAUTHORIZED),
+	ACCESS_TOKEN_BLACKLISTED("C104", "블랙리스트에 등록된 토큰입니다.", HttpStatus.UNAUTHORIZED),
 
 	// HTTP 403 Forbidden
 	FORBIDDEN_ACCESS("C201", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
@@ -42,8 +43,9 @@ public enum ErrorCode {
 	FILE_TOO_LARGE("P003", "파일 크기가 너무 큽니다.", HttpStatus.BAD_REQUEST),
 	UNSUPPORTED_FILE_TYPE("P004", "지원하지 않는 파일 형식입니다.", HttpStatus.BAD_REQUEST),
 	EMPTY_FILE("P005", "업로드된 파일이 비어있습니다.", HttpStatus.BAD_REQUEST),
-
 	;
+
+
 
 	private final HttpStatus status;
 	private final String code;

@@ -1,5 +1,6 @@
 package org.unilab.improfessorbe.domain.user.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
+import org.unilab.improfessorbe.domain.user.dto.request.UserLoginRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserRegisterRequest;
 import org.unilab.improfessorbe.domain.user.dto.request.UserUpdateRequest;
 import org.unilab.improfessorbe.domain.user.dto.response.EmailVerificationRequest;
+import org.unilab.improfessorbe.domain.user.dto.response.UserLoginResponse;
 import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
+import org.unilab.improfessorbe.global.exception.CustomException;
+import org.unilab.improfessorbe.global.exception.ErrorCode;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +58,40 @@ public class UserController {
 	){
 		userService.register(userRegisterRequest);
 		return ResponseEntity.ok(ApiResponse.success());
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<UserLoginResponse>> login(
+		@RequestBody @Valid UserLoginRequest userLoginRequest
+	) {
+		UserLoginResponse loginResponse = userService.login(userLoginRequest);
+		return ResponseEntity.ok(ApiResponse.success(loginResponse));
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<ApiResponse<Void>> logout(
+		HttpServletRequest request
+	) {
+		String accessToken = extractTokenFromRequest(request);
+		userService.logout(accessToken);
+		return ResponseEntity.ok(ApiResponse.success());
+	}
+
+	private String extractTokenFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
+		return null;
+	}
+
+	@PostMapping("/refresh-token")
+	public ResponseEntity<ApiResponse<UserLoginResponse>> refreshToken(
+		HttpServletRequest request
+	) {
+		String refreshToken = extractTokenFromRequest(request);
+		UserLoginResponse newTokens = userService.refreshToken(refreshToken);
+		return ResponseEntity.ok(ApiResponse.success(newTokens));
 	}
 
 	@PatchMapping("/me")
