@@ -79,7 +79,9 @@ public class UserService {
 	@Transactional
 	public void register(UserRegisterRequest userRegisterRequest) {
 		validateDuplicateNickname(userRegisterRequest.getNickname());
-		User user = UserRegisterRequest.toEntity(userRegisterRequest);
+
+		String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
+		User user = UserRegisterRequest.toEntity(userRegisterRequest, encodedPassword);
 		userRepository.save(user);
 	}
 
