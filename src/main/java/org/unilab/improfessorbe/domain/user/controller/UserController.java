@@ -20,7 +20,11 @@ import org.unilab.improfessorbe.domain.user.dto.response.UserLoginResponse;
 import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
+import org.unilab.improfessorbe.global.exception.CustomException;
+import org.unilab.improfessorbe.global.exception.ErrorCode;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +66,23 @@ public class UserController {
 	) {
 		UserLoginResponse loginResponse = userService.login(userLoginRequest);
 		return ResponseEntity.ok(ApiResponse.success(loginResponse));
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<ApiResponse<Void>> logout(
+		HttpServletRequest request
+	) {
+		String accessToken = extractTokenFromRequest(request);
+		userService.logout(accessToken);
+		return ResponseEntity.ok(ApiResponse.success());
+	}
+
+	private String extractTokenFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
+		return null;
 	}
 
 

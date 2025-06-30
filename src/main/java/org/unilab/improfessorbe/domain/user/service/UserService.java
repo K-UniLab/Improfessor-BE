@@ -103,6 +103,32 @@ public class UserService {
 		}
 	}
 
+	@Transactional
+	public void logout(String accessToken) {
+		if (accessToken == null)
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+
+		jwtTokenProvider.validateToken(accessToken);
+
+		Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+		String name = authentication.getName();
+
+		if(redisUtil.existData(name)){
+			redisUtil.deleteData(name);
+		}
+		else{
+			log.warn("logout: not exist refeshtoken");
+		}
+
+		Long remainingExpirationMillis = jwtTokenProvider.getExpiration(accessToken);
+		if(remainingExpirationMillis > 0){
+			redisUtil.setDataExpire(accessToken, "logout", remainingExpirationMillis / 1000);
+		}
+
+		SecurityContextHolder.clearContext();
+	}
+
+
 
 	@Transactional
 	public void updateUser(UserUpdateRequest userUpdateRequest) {
