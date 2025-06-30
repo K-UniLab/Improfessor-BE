@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.unilab.improfessorbe.domain.parse.FileLogUtil;
+import org.unilab.improfessorbe.domain.parse.util.FileLogUtil;
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
 import org.unilab.improfessorbe.domain.problem.application.service.ProblemService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
