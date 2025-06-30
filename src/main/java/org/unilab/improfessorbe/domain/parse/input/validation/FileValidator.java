@@ -20,8 +20,8 @@ public class FileValidator {
 	}
 
 	private void validateNotEmpty(MultipartFile file) {
-		if (file == null || file.isEmpty()) {
-			throw new CustomException(ErrorCode.MISSING_REQUIRED_FIELD);
+		if (file.isEmpty()) {
+			throw new CustomException(ErrorCode.EMPTY_FILE);
 		}
 	}
 

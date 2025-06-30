@@ -37,12 +37,22 @@ public enum ErrorCode {
 	USER_UPDATE_FAILED("U005", "사용자 정보 수정에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	USER_DEACTIVATION_FAILED("U006", "회원 탈퇴 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
-	// Problem
+	// Problem(Request 파싱 중 오류코드)
 	PROBLEM_CREATION_FAILED("P001", "문제 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	FILE_UPLOAD_FAILED("P002", "파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	FILE_TOO_LARGE("P003", "파일 크기가 너무 큽니다.", HttpStatus.BAD_REQUEST),
 	UNSUPPORTED_FILE_TYPE("P004", "지원하지 않는 파일 형식입니다.", HttpStatus.BAD_REQUEST),
 	EMPTY_FILE("P005", "업로드된 파일이 비어있습니다.", HttpStatus.BAD_REQUEST),
+
+	// Problem(생성된 문제 후처리 중 오류코드)
+	PROBLEM_TEXT_EMPTY("P006", "생성된 문제의 텍스트가 비어있습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_TEXT_INVALID_FORMAT("P007", "생성된 문제의 텍스트 형식이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_TEXT_NOT_JSON_ARRAY("P008", "생성된 문제의 텍스트가 JSON 배열 형식이 아닙니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_TEXT_NO_PROBLEMS("P009", "json으로 파싱에 성공한 문제가 없습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_REQUIRED_FIELD_MISSING("P010", "생성된 문제의 필수 필드가 누락되었습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_CONTENT_EMPTY("P011", "생성된 문제의 특정 필드의 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_JSON_PARSING_ERROR("P012", "생성된 문제의 JSON 파싱에 실패했습니다.", HttpStatus.BAD_REQUEST),
+
 	;
 
 
