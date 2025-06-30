@@ -34,11 +34,11 @@ public class UserRegisterRequest {
 
 	private Integer recommendCount;
 
-	public static User toEntity(UserRegisterRequest userRegisterRequest) {
+	public static User toEntity(UserRegisterRequest userRegisterRequest, String encodedPassword) {
 		return User.create(
 			userRegisterRequest.getNickname(),
 			userRegisterRequest.getEmail(),
-			userRegisterRequest.getPassword(),
+			encodedPassword,
 			userRegisterRequest.getUniversity(),
 			userRegisterRequest.getMajor(),
 			userRegisterRequest.getFreeCount(),

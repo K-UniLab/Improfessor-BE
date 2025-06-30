@@ -31,12 +31,15 @@ spring:
       max-file-size: 50MB
       max-request-size: 100MB
 
+  jwt:
+    secret: ${JWT_SECRET_KEY}
+
 logging:
   level:
     org.hibernate.sql: debug
 
 gemini:
   api:
-    key: ${GEMINI_API_KEY:your-gemini-api-key-here}
+    key: ${GEMINI_API_KEY}
     timeout: 30
     base-url: https://generativelanguage.googleapis.com

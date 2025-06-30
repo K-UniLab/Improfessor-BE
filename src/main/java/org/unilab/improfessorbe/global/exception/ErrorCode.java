@@ -17,6 +17,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_ACCESS("C101", "인증 정보가 유효하지 않습니다.", HttpStatus.UNAUTHORIZED),
 	TOKEN_EXPIRED("C102", "인증 토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
 	INVALID_TOKEN("C103", "유효하지 않은 인증 토큰입니다.", HttpStatus.UNAUTHORIZED),
+	ACCESS_TOKEN_BLACKLISTED("C104", "블랙리스트에 등록된 토큰입니다.", HttpStatus.UNAUTHORIZED),
 
 	// HTTP 403 Forbidden
 	FORBIDDEN_ACCESS("C201", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
@@ -53,6 +54,8 @@ public enum ErrorCode {
 	PROBLEM_JSON_PARSING_ERROR("P012", "생성된 문제의 JSON 파싱에 실패했습니다.", HttpStatus.BAD_REQUEST),
 
 	;
+
+
 
 	private final HttpStatus status;
 	private final String code;
