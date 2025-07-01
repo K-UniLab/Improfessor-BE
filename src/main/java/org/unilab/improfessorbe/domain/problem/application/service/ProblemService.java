@@ -1,14 +1,23 @@
 package org.unilab.improfessorbe.domain.problem.application.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.parse.dto.ConceptExtractionResult;
 import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorService;
 import org.unilab.improfessorbe.domain.parse.input.service.FileParseService;
+import org.unilab.improfessorbe.domain.parse.output.PdfExportService;
 import org.unilab.improfessorbe.domain.parse.output.ProblemTextParser;
+import org.unilab.improfessorbe.domain.problem.application.dto.CachedProblemDto;
+import org.unilab.improfessorbe.domain.problem.application.dto.ProblemDownloadResponse;
+import org.unilab.improfessorbe.domain.problem.application.dto.ProblemGenerationResponse;
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
 import org.unilab.improfessorbe.domain.problem.infrastructure.domain.Problem;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.gemini.GeminiApiClient;
@@ -27,6 +36,64 @@ public class ProblemService {
 	private final GeminiApiClient geminiApiClient;
 	private final ProblemTextParser problemTextParser;
 	private final ConceptExtractorService conceptExtractorService;
+	@Qualifier("caffeineCache")
+	private final ProblemCacheService problemCacheService;
+	private final PdfExportService pdfExportService;
+
+	public ProblemGenerationResponse createProblemWithCache(List<MultipartFile> conceptFiles,
+		List<MultipartFile> formatFiles) {
+		try {
+			List<ProblemResponse> responses = createProblemWithMl(conceptFiles, formatFiles);
+
+			// 캐시에 저장
+			String originalFileName = conceptFiles.get(0).getOriginalFilename();
+			String downloadKey = problemCacheService.cacheProblems(responses, originalFileName);
+
+			log.info("문제 생성 및 캐시 저장 완료: 총 {}개 문제, 다운로드 키: {}", responses.size(), downloadKey);
+
+			return ProblemGenerationResponse.of(downloadKey, responses);
+
+		} catch (CustomException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("문제 생성 및 캐시 저장 중 에러", e);
+			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
+		}
+	}
+
+	public ProblemDownloadResponse downloadProblemsPdf(String downloadKey) {
+		// 1. 캐시에서 데이터 조회
+		CachedProblemDto cachedData = problemCacheService.getCachedProblems(downloadKey);
+
+		// 2. PDF 생성
+		byte[] pdfData = pdfExportService.exportProblemsToPdf(
+			cachedData.getProblems(),
+			cachedData.getOriginalFileName()
+		);
+
+		// 3. 파일명 생성
+		String fileName = createDownloadFileName();
+
+		// 4. 로깅
+		log.info("문제 PDF 생성 완료: key={}, 파일명={}, 문제수={}",
+			downloadKey, fileName, cachedData.getProblems().size());
+
+		return ProblemDownloadResponse.builder()
+			.pdfData(pdfData)
+			.fileName(fileName)
+			.originalFileName(cachedData.getOriginalFileName())
+			.build();
+	}
+
+	private String createDownloadFileName() {
+		String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+		try {
+			return URLEncoder.encode("생성된_문제_" + timestamp + ".pdf", "UTF-8")
+				.replaceAll("\\+", "%20");
+		} catch (UnsupportedEncodingException e) {
+			return "problems_" + timestamp + ".pdf";
+		}
+	}
 
 	public List<ProblemResponse> createProblem(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
 		try {
