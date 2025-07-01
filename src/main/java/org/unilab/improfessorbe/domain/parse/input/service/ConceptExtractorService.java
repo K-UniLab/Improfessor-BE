@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ConceptExtractorService {
 
 	public ConceptExtractionResult extractConcepts(String text) {
-		return extractConcepts(text, 100, 100);
+		return extractConcepts(text, 50, 50);
 	}
 
 	public ConceptExtractionResult extractConcepts(String text, int keywordCount, int sentenceCount) {

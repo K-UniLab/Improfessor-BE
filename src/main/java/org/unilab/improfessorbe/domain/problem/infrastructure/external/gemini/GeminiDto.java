@@ -46,6 +46,9 @@ public class GeminiDto {
 	public static class Response {
 		private List<Candidate> candidates;
 
+		@JsonProperty("usageMetadata")
+		private UsageMetadata usageMetadata;
+
 		@Getter
 		@NoArgsConstructor
 		@AllArgsConstructor
@@ -65,6 +68,20 @@ public class GeminiDto {
 					private String text;
 				}
 			}
+		}
+
+		@Getter
+		@NoArgsConstructor
+		@AllArgsConstructor
+		public static class UsageMetadata {
+			@JsonProperty("promptTokenCount")
+			private int promptTokenCount;        // 입력 토큰 수
+
+			@JsonProperty("candidatesTokenCount")
+			private int candidatesTokenCount;    // 출력 토큰 수
+
+			@JsonProperty("totalTokenCount")
+			private int totalTokenCount;         // 총 토큰 수
 		}
 	}
 }
