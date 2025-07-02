@@ -76,7 +76,7 @@ public class FileLogUtil {
 		}
 		return files.stream()
 			.mapToLong(MultipartFile::getSize)
-			.sum() / (1024.0 * 1024.0);
+			.sum() / (1000.0 * 1000.0);
 	}
 
 	public boolean isValidRequest(List<MultipartFile> conceptFiles) {

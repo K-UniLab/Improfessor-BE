@@ -43,3 +43,9 @@ gemini:
     key: ${GEMINI_API_KEY}
     timeout: 30
     base-url: https://generativelanguage.googleapis.com
+
+cache:
+  type: caffeine  # caffeine 또는 redis
+  caffeine:
+    maximum-size: 200        # 최대 캐시 항목 수
+    expire-after-write: 2h    # 2시간 후 만료

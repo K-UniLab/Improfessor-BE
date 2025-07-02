@@ -33,11 +33,16 @@ public class GeminiApiClient {
 		다음을 참고해서 JSON 형식으로 대학교 시험 문제 10개를 생성하세요.
 		   [{"number":1,"content":"문제내용","description":"풀이과정","answer":"답"},{"number":2,"content":"문제내용","description":"풀이과정","answer":"답"}]
 		   규칙:
-		   - JSON 배열만 출력 (다른 텍스트 금지)
-		   - 모든 값은 한 줄로 작성 (줄바꿈 금지)
-		   - 따옴표 안에서 따옴표 사용 금지
-		- 다음 텍스트에서 중요한 개념 위주로 문제를 만드시오: %s
-		- 다음 텍스트가 존재하면 비슷한 문제 형식(객관식, 주관식, 단답식) 비율으로 만들고, 존재하지 않으면 3, 4, 3개 비율로 만드세요: %s
+		   - JSON 배열만 출력 (다른 텍스트 금지).
+		   - 모든 값은 한 줄로 작성 (줄바꿈 금지).
+		   - 따옴표 안에서 따옴표 사용 금지.
+		   - 문제 내용은 중요한 개념 텍스트를 참고해.
+		   - 문제 스타일은 문제 형식을 참고해.
+		   - (객관식, 주관식, 단답식)비율을 문제 형식의 비율과 맞추고, 문제 형식 텍스트가 존재하지 않으면 3, 4, 3개 비율로 만들어.
+		   - 객관식 생성할때 기호는 ①, ②, ③, ④, ⑤ 이런식으로 생성해.
+		   - 풀이과정과 답을 구체적으로 작성해.
+		- 중요한 개념: %s.
+		- 문제 형식: %s.
 		""";
 
 	public String generateProblems(String conceptText, String formatText) {
@@ -94,6 +99,9 @@ public class GeminiApiClient {
 				throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 			}
 
+			// 토큰 사용량 로깅 추가!
+			logTokenUsage(response);
+
 			if (response.getCandidates() == null || response.getCandidates().isEmpty()) {
 				log.warn("Gemini API 응답에 candidates가 없습니다.");
 				throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
@@ -116,6 +124,24 @@ public class GeminiApiClient {
 		} catch (Exception e) {
 			log.error("Gemini 응답 파싱 중 에러 발생", e);
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
+		}
+	}
+
+	private void logTokenUsage(GeminiDto.Response response) {
+		try {
+			if (response.getUsageMetadata() != null) {
+				GeminiDto.Response.UsageMetadata usage = response.getUsageMetadata();
+
+				log.info("🔍 Gemini API 토큰 사용량 - 입력: {}개, 출력: {}개, 총합: {}개",
+					usage.getPromptTokenCount(),
+					usage.getCandidatesTokenCount(),
+					usage.getTotalTokenCount());
+
+			} else {
+				log.warn("⚠️ Gemini API 응답에 토큰 사용량 정보가 없습니다.");
+			}
+		} catch (Exception e) {
+			log.warn("토큰 사용량 로깅 중 에러 발생 (무시): {}", e.getMessage());
 		}
 	}
 }
