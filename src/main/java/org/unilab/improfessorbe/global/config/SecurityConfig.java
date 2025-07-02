@@ -41,7 +41,7 @@ public class SecurityConfig {
 			.httpBasic(httpBasic -> httpBasic.disable())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/", "/api/users/register", "/api/users/login", "api/users/refresh-token", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+				.requestMatchers("/", "/api/users/register", "/api/users/login", "api/users/refresh-token", "/api/users/email/send-verification", "/api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)
