@@ -62,7 +62,7 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowCredentials(true);
 		corsConfiguration.setAllowedOrigins(
-			List.of("http://localhost:5173")
+			List.of("http://localhost:5173", "https://improfessor-fe.vercel.app")
 		);
 
 		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
