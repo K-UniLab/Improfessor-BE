@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class SwaggerConfig {
@@ -23,10 +24,15 @@ public class SwaggerConfig {
 		
 		SecurityRequirement securityRequirement = new SecurityRequirement()
 			.addList("Bearer Token");
+
+		Server server = new Server();
+		server.setUrl("https://api.improfessor.co.kr");
 		
 		return new OpenAPI()
 			.components(new Components().addSecuritySchemes("Bearer Token", apiKey))
-			.addSecurityItem(securityRequirement);
+			.info(apiInfo())
+			.addSecurityItem(securityRequirement)
+			.addServersItem(server);
 	}
 
 	private Info apiInfo(){
