@@ -41,7 +41,7 @@ public class SecurityConfig {
 			.httpBasic(httpBasic -> httpBasic.disable())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/", "/api/users/register", "/api/users/login", "api/users/refresh-token", "api/users/email/send-verification", "api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+				.requestMatchers("/", "/api/users/register", "/api/users/login", "/api/users/refresh-token", "/api/users/email/send-verification", "/api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)
@@ -62,7 +62,7 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowCredentials(true);
 		corsConfiguration.setAllowedOrigins(
-			List.of("http://localhost:5173", "https://improfessor-fe.vercel.app")
+			List.of("http://localhost:5173", "https://improfessor-fe.vercel.app", "https://api.improfessor.co.kr")
 		);
 
 		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
