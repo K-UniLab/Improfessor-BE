@@ -49,3 +49,6 @@ cache:
   caffeine:
     maximum-size: 200
     expire-after-write: 2h
+
+server:
+  url: ${SERVER_URL}
