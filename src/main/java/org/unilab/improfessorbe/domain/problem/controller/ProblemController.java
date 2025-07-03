@@ -18,6 +18,7 @@ import org.unilab.improfessorbe.domain.problem.application.dto.ProblemDownloadRe
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemGenerationResponse;
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
 import org.unilab.improfessorbe.domain.problem.application.service.ProblemService;
+import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
@@ -35,11 +36,13 @@ public class ProblemController {
 
 	private final ProblemService problemService;
 	private final FileLogUtil fileLogUtil;
+	private final UserService userService;
 
 	//메인 사용 모델
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@Operation(summary = "문제 생성", description = "(사용중)개념추출, llm, 캐시 적용 모델")
 	public ResponseEntity<ApiResponse<ProblemGenerationResponse>> createProblemWithMl(
+		@PathVariable Long userId,
 		@RequestParam("conceptFiles") List<MultipartFile> conceptFiles,
 		@RequestParam(value = "formatFiles", required = false) List<MultipartFile> formatFiles) {
 
@@ -49,8 +52,14 @@ public class ProblemController {
 			throw new CustomException(ErrorCode.MISSING_REQUIRED_FIELD);
 		}
 
-		// 문제 생성 + 캐시 저장을 서비스에서 처리
-		ProblemGenerationResponse result = problemService.createProblemWithCache(conceptFiles, formatFiles);
+		// 사용자의 freeCount 확인 및 차감
+		boolean canCreateProblem = userService.checkFreeCount(userId);
+		if (!canCreateProblem) {
+			throw new CustomException(ErrorCode.INSUFFICIENT_FREE_COUNT);
+		}
+
+		// 문제 생성 + 캐시 저장 + 유저 문제 생성 횟수 차감을 서비스에서 처리
+		ProblemGenerationResponse result = problemService.createProblemWithCache(userId, conceptFiles, formatFiles);
 
 		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
 	}

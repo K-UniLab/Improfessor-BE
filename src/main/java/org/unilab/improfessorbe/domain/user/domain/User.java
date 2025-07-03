@@ -40,7 +40,8 @@ public class User extends BaseEntity {
 		ADMIN, USER
 	}
 
-	private User(String nickname, String email, String password, String university, String major, Integer freeCount, Integer recommendCount) {
+	private User(String nickname, String email, String password, String university, String major, Integer freeCount,
+		Integer recommendCount) {
 		this.nickname = nickname;
 		this.email = email;
 		this.password = password;
@@ -51,11 +52,13 @@ public class User extends BaseEntity {
 		this.role = Role.USER;
 	}
 
-	public static User create(String nickname, String email, String password, String university, String major, Integer freeCount, Integer recommendCount){
+	public static User create(String nickname, String email, String password, String university, String major,
+		Integer freeCount, Integer recommendCount) {
 		return new User(nickname, email, password, university, major, freeCount, recommendCount);
 	}
 
-	public void updateUser(String password, String university, String major, Integer freeCount, Integer recommendCount){
+	public void updateUser(String password, String university, String major, Integer freeCount,
+		Integer recommendCount) {
 		this.password = password;
 		this.university = university;
 		this.major = major;
@@ -63,5 +66,8 @@ public class User extends BaseEntity {
 		this.recommendCount = recommendCount;
 	}
 
+	public void decrementFreeCount() {
+		this.freeCount--;
+	}
 
 }
