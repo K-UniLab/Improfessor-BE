@@ -90,8 +90,11 @@ public class UserService {
 
 	@Transactional
 	public UserLoginResponse login(UserLoginRequest userLoginRequest) {
+		User user = userRepository.findByEmailAndDeletedAtIsNull(userLoginRequest.getEmail())
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
 		UsernamePasswordAuthenticationToken authenticationToken =
-			new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword());
+			new UsernamePasswordAuthenticationToken(user.getUserId(), userLoginRequest.getPassword());
 
 		try {
 			Authentication authentication = authenticationManager.authenticate(authenticationToken);
