@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProblemTextParser {
 
-	// 개선된 ProblemTextParser.java
 	public List<Problem> parseProblemText(String problemText) {
 		List<Problem> problems = new ArrayList<>();
 
@@ -57,7 +56,6 @@ public class ProblemTextParser {
 			}
 
 		} catch (CustomException e) {
-			// CustomException은 그대로 전파
 			throw e;
 		} catch (JsonProcessingException e) {
 			log.error("JSON 파싱 에러: {}", e.getMessage());

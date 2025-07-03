@@ -40,7 +40,7 @@ public class FileLogUtil {
 
 		for (int i = 0; i < conceptFiles.size(); i++) {
 			MultipartFile file = conceptFiles.get(i);
-			double sizeInMB = file.getSize() / (1024.0 * 1024.0);
+			double sizeInMB = file.getSize() / (1000.0 * 1000.0);
 			String fileName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown";
 			log.info("개념 파일 {}: {} ({} MB)",
 				i + 1, fileName, String.format("%.3f", sizeInMB));
@@ -58,7 +58,7 @@ public class FileLogUtil {
 
 		for (int i = 0; i < formatFiles.size(); i++) {
 			MultipartFile file = formatFiles.get(i);
-			double sizeInMB = file.getSize() / (1024.0 * 1024.0);
+			double sizeInMB = file.getSize() / (1000.0 * 1000.0);
 			String fileName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown";
 
 			// 빈 파일 체크 및 로깅

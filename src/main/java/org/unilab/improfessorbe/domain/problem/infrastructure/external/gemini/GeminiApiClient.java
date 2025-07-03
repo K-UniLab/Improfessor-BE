@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GeminiApiClient {
 
 	private final WebClient geminiWebClient;
+	private final GeminiRateLimitManager rateLimitManager;
 
 	@Value("${gemini.api.key}")
 	private String apiKey;
@@ -40,6 +41,7 @@ public class GeminiApiClient {
 		   - 문제 스타일은 문제 형식을 참고해.
 		   - (객관식, 주관식, 단답식)비율을 문제 형식의 비율과 맞추고, 문제 형식 텍스트가 존재하지 않으면 3, 4, 3개 비율로 만들어.
 		   - 객관식 생성할때 기호는 ①, ②, ③, ④, ⑤ 이런식으로 생성해.
+		   - 비슷한 개념의 문제를 생성하지마.
 		   - 풀이과정과 답을 구체적으로 작성해.
 		- 중요한 개념: %s.
 		- 문제 형식: %s.
@@ -51,6 +53,9 @@ public class GeminiApiClient {
 	}
 
 	private String callGemini(String prompt) {
+		// 요청 전 제한 확인
+		rateLimitManager.checkRateLimit();
+
 		GeminiDto.Request request = GeminiDto.Request.builder()
 			.contents(List.of(
 				GeminiDto.Request.Content.builder()
@@ -71,22 +76,23 @@ public class GeminiApiClient {
 				.retrieve()
 				.bodyToMono(GeminiDto.Response.class)
 				.timeout(Duration.ofSeconds(timeout))
-				.block();  // onErrorResume 제거!
+				.block();
 
 			return extractResponseText(geminiResponse);
 
+		} catch (WebClientResponseException.TooManyRequests e) {
+			log.error("Gemini API 요청 제한 초과 (429): {}", e.getResponseBodyAsString());
+			throw new CustomException(ErrorCode.GEMINI_RATE_LIMIT_EXCEEDED);
+
 		} catch (WebClientResponseException.ServiceUnavailable e) {
-			// 503 에러
 			log.error("Gemini API 서비스 이용 불가 (503): {}", e.getResponseBodyAsString());
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 
 		} catch (WebClientResponseException e) {
-			// 기타 HTTP 에러
 			log.error("Gemini API HTTP 에러: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 
 		} catch (Exception e) {
-			// 기타 예외
 			log.error("Gemini API 호출 중 예상치 못한 에러", e);
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 		}
@@ -143,5 +149,12 @@ public class GeminiApiClient {
 		} catch (Exception e) {
 			log.warn("토큰 사용량 로깅 중 에러 발생 (무시): {}", e.getMessage());
 		}
+	}
+
+	/**
+	 * 현재 토큰 버켓 상태 조회 (모니터링/디버깅 용도)
+	 */
+	public GeminiRateLimitManager.TokenBucketStatus getRateLimitStatus() {
+		return rateLimitManager.getTokenBucketStatus();
 	}
 }

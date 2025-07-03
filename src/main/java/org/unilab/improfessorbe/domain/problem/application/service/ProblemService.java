@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.parse.dto.ConceptExtractionResult;
 import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorService;
@@ -21,6 +22,7 @@ import org.unilab.improfessorbe.domain.problem.application.dto.ProblemGeneration
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
 import org.unilab.improfessorbe.domain.problem.infrastructure.domain.Problem;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.gemini.GeminiApiClient;
+import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 
@@ -39,17 +41,23 @@ public class ProblemService {
 	@Qualifier("caffeineCache")
 	private final ProblemCacheService problemCacheService;
 	private final PdfExportService pdfExportService;
+	private final UserService userService;
 
-	public ProblemGenerationResponse createProblemWithCache(List<MultipartFile> conceptFiles,
+	@Transactional
+	public ProblemGenerationResponse createProblemWithCache(Long userId, List<MultipartFile> conceptFiles,
 		List<MultipartFile> formatFiles) {
 		try {
+			// 1. 문제 생성
 			List<ProblemResponse> responses = createProblemWithMl(conceptFiles, formatFiles);
 
-			// 캐시에 저장
+			// 2. 캐시 생성 및 저장
 			String originalFileName = conceptFiles.get(0).getOriginalFilename();
 			String downloadKey = problemCacheService.cacheProblems(responses, originalFileName);
 
 			log.info("문제 생성 및 캐시 저장 완료: 총 {}개 문제, 다운로드 키: {}", responses.size(), downloadKey);
+
+			//3. 유저 무료 횟수 차감
+			userService.decrementFreeCount(userId);
 
 			return ProblemGenerationResponse.of(downloadKey, responses);
 

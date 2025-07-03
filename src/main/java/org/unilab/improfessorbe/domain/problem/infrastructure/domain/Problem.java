@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class Problem {
 
-	//제목, 내용, 풀이과정, 정답
+	//문제 번호, 내용, 풀이과정, 정답
 	private String number;
 	private String content;
 	private String description;

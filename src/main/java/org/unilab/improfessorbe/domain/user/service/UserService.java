@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.unilab.improfessorbe.domain.user.domain.User;
 import org.unilab.improfessorbe.domain.user.dto.request.EmailVerificationResponse;
 import org.unilab.improfessorbe.domain.user.dto.request.UserLoginRequest;
@@ -23,7 +24,7 @@ import org.unilab.improfessorbe.global.exception.ErrorCode;
 import org.unilab.improfessorbe.global.security.jwt.JwtToken;
 import org.unilab.improfessorbe.global.security.jwt.JwtTokenProvider;
 import org.unilab.improfessorbe.global.util.RedisUtil;
-import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,7 +53,7 @@ public class UserService {
 
 		redisUtil.setDataExpire(email, code, EXPIRATION);
 
-		try{
+		try {
 			emailService.sendEmail(email, title, text);
 		} catch (Exception e) {
 			log.error("Error: {}", e);
@@ -62,16 +63,18 @@ public class UserService {
 	}
 
 	public EmailVerificationResponse verifyEmail(String email, String code) {
-		if(redisUtil.existData(email)){
+		if (redisUtil.existData(email)) {
 			String result = redisUtil.getData(email);
-			if(result.equals(code)){
+			if (result.equals(code)) {
 				return EmailVerificationResponse.builder().verified(true).message("인증 성공하였습니다.").build();
+			} else {
+				return EmailVerificationResponse.builder()
+					.verified(false)
+					.message(result)
+					.message("인증번호가 일치하지 않습니다")
+					.build();
 			}
-			else{
-				return EmailVerificationResponse.builder().verified(false).message(result).message("인증번호가 일치하지 않습니다").build();
-			}
-		}
-		else{
+		} else {
 			return EmailVerificationResponse.builder().verified(false).message("인증번호가 만료되었습니다. 다시 시도해주세요.").build();
 		}
 	}
@@ -90,16 +93,16 @@ public class UserService {
 		UsernamePasswordAuthenticationToken authenticationToken =
 			new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword());
 
-		try{
-			Authentication authentication  = authenticationManager.authenticate(authenticationToken);
+		try {
+			Authentication authentication = authenticationManager.authenticate(authenticationToken);
 			JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
 			redisUtil.setDataExpire(authentication.getName(), jwtToken.getRefreshToken(), REFRESH_TOKEN_EXPIRE_SECONDS);
 
 			return UserLoginResponse.of(jwtToken);
-		} catch (BadCredentialsException e){
+		} catch (BadCredentialsException e) {
 			log.error("login error: not valid password");
 			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
-		} catch (Exception e){
+		} catch (Exception e) {
 			log.error("login error");
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 		}
@@ -115,15 +118,14 @@ public class UserService {
 		Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
 		String name = authentication.getName();
 
-		if(redisUtil.existData(name)){
+		if (redisUtil.existData(name)) {
 			redisUtil.deleteData(name);
-		}
-		else{
+		} else {
 			log.warn("logout: not exist refeshtoken");
 		}
 
 		Long remainingExpirationMillis = jwtTokenProvider.getExpiration(accessToken);
-		if(remainingExpirationMillis > 0){
+		if (remainingExpirationMillis > 0) {
 			redisUtil.setDataExpire(accessToken, "logout", remainingExpirationMillis / 1000);
 		}
 
@@ -132,12 +134,11 @@ public class UserService {
 
 	@Transactional
 	public UserLoginResponse refreshToken(String refreshToken) {
-		if(refreshToken == null)
+		if (refreshToken == null)
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		JwtToken newJwtToken = jwtTokenProvider.refreshToken(refreshToken);
 		return UserLoginResponse.of(newJwtToken);
 	}
-
 
 	@Transactional
 	public void updateUser(UserUpdateRequest userUpdateRequest) {
@@ -167,17 +168,35 @@ public class UserService {
 
 	private void validateDuplicateEmail(String email) {
 		Optional<User> user = userRepository.findByEmailAndDeletedAtIsNull(email);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			throw new CustomException(ErrorCode.EMAIL_DUPLICATION);
 		}
 	}
 
 	private void validateDuplicateNickname(String nickname) {
 		Optional<User> user = userRepository.findByNicknameAndDeletedAtIsNull(nickname);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			throw new CustomException(ErrorCode.NICKNAME_DUPLICATION);
 		}
 	}
 
+	public boolean checkFreeCount(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+		return user.getFreeCount() > 0;
+	}
+
+	@Transactional
+	public void decrementFreeCount(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		if (user.getFreeCount() <= 0) {
+			throw new CustomException(ErrorCode.INSUFFICIENT_FREE_COUNT);
+		}
+
+		user.decrementFreeCount();
+		userRepository.save(user);
+	}
 }
