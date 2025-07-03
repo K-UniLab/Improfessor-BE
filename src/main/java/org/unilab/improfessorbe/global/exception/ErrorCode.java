@@ -36,8 +36,9 @@ public enum ErrorCode {
 	PASSWORD_MISMATCH("U004", "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
 	USER_UPDATE_FAILED("U005", "사용자 정보 수정에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	USER_DEACTIVATION_FAILED("U006", "회원 탈퇴 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	INSUFFICIENT_FREE_COUNT("U007", "사용자의 문제 무료 생성횟수가 부족합니다.", HttpStatus.BAD_REQUEST),
 
-	// Problem(Request 파싱 중 오류코드)
+	// Problem(문제 생성 전 오류코드)
 	PROBLEM_CREATION_FAILED("P001", "문제 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	FILE_UPLOAD_FAILED("P002", "파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	FILE_TOO_LARGE("P003", "파일 크기가 너무 큽니다.", HttpStatus.BAD_REQUEST),
@@ -53,9 +54,11 @@ public enum ErrorCode {
 	PROBLEM_CONTENT_EMPTY("P011", "생성된 문제의 특정 필드의 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
 	PROBLEM_JSON_PARSING_ERROR("P012", "생성된 문제의 JSON 파싱에 실패했습니다.", HttpStatus.BAD_REQUEST),
 
+	// Gemini
+	GEMINI_RATE_LIMIT_EXCEEDED("G001", "Gemini 분당 횟수 초과, 문제 생성을 잠시 후에 다시 시도해주세요.", HttpStatus.BAD_REQUEST),
+	GEMINI_DAILY_LIMIT_EXCEEDED("G002", "Gemini 일일 횟수 초과, 문제 생성을 내일 다시 시도해주세요.", HttpStatus.BAD_REQUEST),
+
 	;
-
-
 
 	private final HttpStatus status;
 	private final String code;
