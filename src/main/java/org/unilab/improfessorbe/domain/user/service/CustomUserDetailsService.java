@@ -22,8 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	private final UserRepository userRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		User user = userRepository.findByEmailAndDeletedAtIsNull(email)
+	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+		Long id = Long.parseLong(userId);
+		User user = userRepository.findByUserIdAndDeletedAtIsNull(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		List<SimpleGrantedAuthority> authorities = Collections.singletonList(
@@ -31,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		);
 
 		return new org.springframework.security.core.userdetails.User(
-			user.getEmail(),
+			user.getUserId().toString(),
 			user.getPassword(),
 			authorities
 		);
