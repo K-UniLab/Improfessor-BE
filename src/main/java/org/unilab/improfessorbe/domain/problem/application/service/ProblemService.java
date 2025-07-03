@@ -38,7 +38,7 @@ public class ProblemService {
 	private final GeminiApiClient geminiApiClient;
 	private final ProblemTextParser problemTextParser;
 	private final ConceptExtractorService conceptExtractorService;
-	@Qualifier("caffeineCache")
+	@Qualifier("redisCache")
 	private final ProblemCacheService problemCacheService;
 	private final PdfExportService pdfExportService;
 	private final UserService userService;
