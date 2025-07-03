@@ -58,7 +58,12 @@ public enum ErrorCode {
 	GEMINI_RATE_LIMIT_EXCEEDED("G001", "Gemini 분당 횟수 초과, 문제 생성을 잠시 후에 다시 시도해주세요.", HttpStatus.BAD_REQUEST),
 	GEMINI_DAILY_LIMIT_EXCEEDED("G002", "Gemini 일일 횟수 초과, 문제 생성을 내일 다시 시도해주세요.", HttpStatus.BAD_REQUEST),
 
-	;
+	// Cache (C300번대)
+	CACHE_OPERATION_FAILED("C301", "캐시 작업 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	CACHE_SERIALIZATION_ERROR("C302", "캐시 데이터 직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	CACHE_DESERIALIZATION_ERROR("C303", "캐시 데이터 역직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	DOWNLOAD_LINK_EXPIRED("C304", "다운로드 링크가 만료되었습니다. 문제를 다시 생성해주세요.", HttpStatus.BAD_REQUEST),
+	CACHE_CONNECTION_ERROR("C305", "캐시 서버 연결에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private final HttpStatus status;
 	private final String code;

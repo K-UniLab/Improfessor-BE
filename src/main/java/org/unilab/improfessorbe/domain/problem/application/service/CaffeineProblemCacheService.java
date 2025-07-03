@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Component;
 import org.unilab.improfessorbe.domain.problem.application.dto.CachedProblemDto;
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
 import org.unilab.improfessorbe.global.exception.CustomException;
@@ -16,7 +15,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Component("caffeineCache")
+// @Component("caffeineCache")
 @Slf4j
 public class CaffeineProblemCacheService implements ProblemCacheService {
 
