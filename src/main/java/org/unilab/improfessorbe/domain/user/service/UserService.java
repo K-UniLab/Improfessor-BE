@@ -150,7 +150,7 @@ public class UserService {
 
 		user.updateUser(
 			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor(),
-			userUpdateRequest.getFreeCount(), userUpdateRequest.getRecommendCount()
+			userUpdateRequest.getRecommendCount()
 		);
 	}
 

@@ -1,6 +1,5 @@
 package org.unilab.improfessorbe.domain.user.dto.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -21,8 +20,6 @@ public class UserUpdateRequest {
 	private String university;
 
 	private String major;
-
-	private Integer freeCount;
 
 	private Integer recommendCount;
 
