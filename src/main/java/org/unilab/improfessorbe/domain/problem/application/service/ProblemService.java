@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.parse.dto.ConceptExtractionResult;
+import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorOurService;
 import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorService;
 import org.unilab.improfessorbe.domain.parse.input.service.FileParseService;
 import org.unilab.improfessorbe.domain.parse.output.PdfExportService;
@@ -38,6 +39,7 @@ public class ProblemService {
 	private final GeminiApiClient geminiApiClient;
 	private final ProblemTextParser problemTextParser;
 	private final ConceptExtractorService conceptExtractorService;
+	private final ConceptExtractorOurService conceptExtractorOurService;
 	@Qualifier("redisCache")
 	private final ProblemCacheService problemCacheService;
 	private final PdfExportService pdfExportService;
@@ -143,7 +145,7 @@ public class ProblemService {
 				conceptContent.length(), formatContent.length());
 
 			//ML 추가
-			ConceptExtractionResult result = conceptExtractorService.extractConcepts(conceptContent);
+			ConceptExtractionResult result = conceptExtractorOurService.extractConcepts(conceptContent);
 			String conceptExtraction = result.toFormattedString();
 
 			String problemText = geminiApiClient.generateProblems(conceptExtraction, formatContent);

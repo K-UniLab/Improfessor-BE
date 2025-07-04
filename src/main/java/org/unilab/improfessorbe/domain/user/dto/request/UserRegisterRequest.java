@@ -1,6 +1,5 @@
 package org.unilab.improfessorbe.domain.user.dto.request;
 
-
 import org.unilab.improfessorbe.domain.user.domain.User;
 
 import jakarta.validation.constraints.Email;
@@ -30,19 +29,13 @@ public class UserRegisterRequest {
 
 	private String major;
 
-	private Integer freeCount;
-
-	private Integer recommendCount;
-
 	public static User toEntity(UserRegisterRequest userRegisterRequest, String encodedPassword) {
 		return User.create(
 			userRegisterRequest.getNickname(),
 			userRegisterRequest.getEmail(),
 			encodedPassword,
 			userRegisterRequest.getUniversity(),
-			userRegisterRequest.getMajor(),
-			userRegisterRequest.getFreeCount(),
-			userRegisterRequest.getRecommendCount()
+			userRegisterRequest.getMajor()
 		);
 	}
 
