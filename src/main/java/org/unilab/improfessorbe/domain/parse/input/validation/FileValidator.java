@@ -10,7 +10,7 @@ import org.unilab.improfessorbe.global.exception.ErrorCode;
 @Component
 public class FileValidator {
 
-	private static final long MAX_FILE_SIZE = 21 * 1000 * 1000; // 20~21MB
+	private static final long MAX_FILE_SIZE = 16 * 1000 * 1000; // 15~16MB
 	private static final Set<String> SUPPORTED_EXTENSIONS = Set.of("pdf", "ppt", "pptx");
 
 	public void validateFile(MultipartFile file) {

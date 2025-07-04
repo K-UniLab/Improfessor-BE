@@ -16,14 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.parse.util.FileLogUtil;
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemDownloadResponse;
 import org.unilab.improfessorbe.domain.problem.application.dto.ProblemGenerationResponse;
-import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
+//import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
 import org.unilab.improfessorbe.domain.problem.application.service.ProblemService;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 
-import io.swagger.v3.oas.annotations.Hidden;
+//import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +79,7 @@ public class ProblemController {
 			.body(result.getPdfData());
 	}
 
-	//ml안쓴 모델, 그냥 파싱한거 다 llm 넣음
+	/*//ml안쓴 모델, 그냥 파싱한거 다 llm 넣음
 	@Hidden
 	@PostMapping("/notml")
 	public ResponseEntity<ApiResponse<List<ProblemResponse>>> createProblem(
@@ -139,5 +139,5 @@ public class ProblemController {
 		return ResponseEntity.ok(
 			ApiResponse.success(result, "문제가 성공적으로 생성되었습니다.")
 		);
-	}
+	}*/
 }

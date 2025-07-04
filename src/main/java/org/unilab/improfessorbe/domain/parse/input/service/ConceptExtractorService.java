@@ -1,3 +1,4 @@
+/*
 package org.unilab.improfessorbe.domain.parse.input.service;
 
 import java.util.Collections;
@@ -81,4 +82,4 @@ public class ConceptExtractorService {
 			return Collections.emptyList();
 		}
 	}
-}
+}*/

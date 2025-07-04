@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.parse.dto.ConceptExtractionResult;
 import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorOurService;
-import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorService;
+//import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorService;
 import org.unilab.improfessorbe.domain.parse.input.service.FileParseService;
 import org.unilab.improfessorbe.domain.parse.output.PdfExportService;
 import org.unilab.improfessorbe.domain.parse.output.ProblemTextParser;
@@ -38,7 +38,7 @@ public class ProblemService {
 	private final FileParseService fileParseService;
 	private final GeminiApiClient geminiApiClient;
 	private final ProblemTextParser problemTextParser;
-	private final ConceptExtractorService conceptExtractorService;
+//	private final ConceptExtractorService conceptExtractorService;
 	private final ConceptExtractorOurService conceptExtractorOurService;
 	@Qualifier("redisCache")
 	private final ProblemCacheService problemCacheService;
@@ -105,7 +105,7 @@ public class ProblemService {
 		}
 	}
 
-	public List<ProblemResponse> createProblem(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
+	/*public List<ProblemResponse> createProblem(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
 		try {
 			String conceptContent = fileParseService.parseFileList(conceptFiles, "개념");
 			String formatContent = "";
@@ -130,7 +130,7 @@ public class ProblemService {
 		} catch (Exception e) {
 			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
 		}
-	}
+	}*/
 
 	public List<ProblemResponse> createProblemWithMl(List<MultipartFile> conceptFiles,
 		List<MultipartFile> formatFiles) {
@@ -165,7 +165,7 @@ public class ProblemService {
 		}
 	}
 
-	public String getRawGeneratedProblem(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
+	/*public String getRawGeneratedProblem(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
 		try {
 			String conceptContent = fileParseService.parseFileList(conceptFiles, "개념");
 			String formatContent = "";
@@ -197,9 +197,9 @@ public class ProblemService {
 			log.info("개념 파일 글자수: {}개 / 형식 파일 글자수: {}개",
 				conceptContent.length(), formatContent.length());
 
-			/*StringBuilder sb = new StringBuilder();
+			*//*StringBuilder sb = new StringBuilder();
 			sb.append(conceptContent);
-			sb.append(formatContent);*/
+			sb.append(formatContent);*//*
 
 			ConceptExtractionResult result = conceptExtractorService.extractConcepts(conceptContent, 100, 100);
 			String conceptExtraction = result.toFormattedString();
@@ -211,5 +211,5 @@ public class ProblemService {
 		} catch (Exception e) {
 			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
 		}
-	}
+	}*/
 }
