@@ -29,16 +29,13 @@ public class UserRegisterRequest {
 
 	private String major;
 
-	private Integer recommendCount;
-
 	public static User toEntity(UserRegisterRequest userRegisterRequest, String encodedPassword) {
 		return User.create(
 			userRegisterRequest.getNickname(),
 			userRegisterRequest.getEmail(),
 			encodedPassword,
 			userRegisterRequest.getUniversity(),
-			userRegisterRequest.getMajor(),
-			userRegisterRequest.getRecommendCount()
+			userRegisterRequest.getMajor()
 		);
 	}
 

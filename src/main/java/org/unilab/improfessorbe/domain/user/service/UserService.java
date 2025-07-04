@@ -149,8 +149,7 @@ public class UserService {
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		user.updateUser(
-			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor(),
-			userUpdateRequest.getRecommendCount()
+			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor()
 		);
 	}
 

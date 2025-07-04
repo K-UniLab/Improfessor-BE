@@ -21,6 +21,4 @@ public class UserUpdateRequest {
 
 	private String major;
 
-	private Integer recommendCount;
-
 }
