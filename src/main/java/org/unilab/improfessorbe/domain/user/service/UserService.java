@@ -39,6 +39,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManager authenticationManager;
+	private final UserRecommendationService userRecommendationService;
 
 	private final Long EXPIRATION = 10 * 60L;
 	private final Long REFRESH_TOKEN_EXPIRE_SECONDS = 7 * 24 * 60 * 60L;
@@ -85,7 +86,13 @@ public class UserService {
 
 		String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
 		User user = UserRegisterRequest.toEntity(userRegisterRequest, encodedPassword);
-		userRepository.save(user);
+		User savedUser = userRepository.save(user);
+
+		if (userRegisterRequest.getRecommendNickname() != null &&
+			!userRegisterRequest.getRecommendNickname().trim().isEmpty()) {
+			userRecommendationService.processRecommendation(savedUser.getUserId(),
+				userRegisterRequest.getRecommendNickname());
+		}
 	}
 
 	@Transactional
@@ -148,9 +155,18 @@ public class UserService {
 		User user = userRepository.findByUserIdAndDeletedAtIsNull(userUpdateRequest.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+		String encodedPassword = passwordEncoder.encode(userUpdateRequest.getPassword());
+
 		user.updateUser(
-			userUpdateRequest.getPassword(), userUpdateRequest.getUniversity(), userUpdateRequest.getMajor()
+			encodedPassword,
+			userUpdateRequest.getUniversity(),
+			userUpdateRequest.getMajor()
 		);
+
+		if (userUpdateRequest.getRecommendNickname() != null &&
+			!userUpdateRequest.getRecommendNickname().trim().isEmpty()) {
+			userRecommendationService.processRecommendation(user.getUserId(), userUpdateRequest.getRecommendNickname());
+		}
 	}
 
 	@Transactional(readOnly = true)
