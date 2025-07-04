@@ -29,6 +29,8 @@ public class UserRegisterRequest {
 
 	private String major;
 
+	private String recommendNickname;
+
 	public static User toEntity(UserRegisterRequest userRegisterRequest, String encodedPassword) {
 		return User.create(
 			userRegisterRequest.getNickname(),
