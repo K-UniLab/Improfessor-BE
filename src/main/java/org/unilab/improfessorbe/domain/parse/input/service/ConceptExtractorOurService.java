@@ -32,7 +32,7 @@ public class ConceptExtractorOurService {
 	}
 
 	public ConceptExtractionResult extractConcepts(String text) {
-		return extractConcepts(text, 50, 50);
+		return extractConcepts(text, 12, 50);
 	}
 
 	public ConceptExtractionResult extractConcepts(String text, int keywordCount, int sentenceCount) {
