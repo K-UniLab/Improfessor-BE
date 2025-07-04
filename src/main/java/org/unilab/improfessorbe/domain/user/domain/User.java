@@ -40,21 +40,21 @@ public class User extends BaseEntity {
 		ADMIN, USER
 	}
 
-	private User(String nickname, String email, String password, String university, String major, Integer freeCount,
+	private User(String nickname, String email, String password, String university, String major,
 		Integer recommendCount) {
 		this.nickname = nickname;
 		this.email = email;
 		this.password = password;
 		this.university = university;
 		this.major = major;
-		this.freeCount = freeCount;
+		this.freeCount = 5;
 		this.recommendCount = recommendCount;
 		this.role = Role.USER;
 	}
 
 	public static User create(String nickname, String email, String password, String university, String major,
-		Integer freeCount, Integer recommendCount) {
-		return new User(nickname, email, password, university, major, freeCount, recommendCount);
+		Integer recommendCount) {
+		return new User(nickname, email, password, university, major, recommendCount);
 	}
 
 	public void updateUser(String password, String university, String major, Integer freeCount,
