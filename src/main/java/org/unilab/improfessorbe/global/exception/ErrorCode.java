@@ -38,6 +38,13 @@ public enum ErrorCode {
 	USER_DEACTIVATION_FAILED("U006", "회원 탈퇴 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	INSUFFICIENT_FREE_COUNT("U007", "사용자의 문제 무료 생성횟수가 부족합니다.", HttpStatus.BAD_REQUEST),
 
+	// Recommendation
+	ALREADY_RECOMMENDED("R001", "이미 추천을 완료하셨습니다.", HttpStatus.BAD_REQUEST),
+	SELF_RECOMMENDATION_NOT_ALLOWED("R002", "자기 자신을 추천할 수 없습니다.", HttpStatus.BAD_REQUEST),
+	INVALID_RECOMMEND_NICKNAME("R003", "추천하시려는 닉네임이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+	RECOMMEND_LIMIT_EXCEEDED("R004", "추천하신 사용자가 추천 받을 수 있는 횟수를 초과했습니다.", HttpStatus.BAD_REQUEST),
+	RECOMMEND_PROCESSING_FAILED("R005", "추천 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
 	// Problem(문제 생성 전 오류코드)
 	PROBLEM_CREATION_FAILED("P001", "문제 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	FILE_UPLOAD_FAILED("P002", "파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),

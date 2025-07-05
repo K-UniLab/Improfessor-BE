@@ -33,6 +33,8 @@ public class User extends BaseEntity {
 
 	private Integer recommendCount;
 
+	private boolean isRecommend;
+
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
 
@@ -49,6 +51,7 @@ public class User extends BaseEntity {
 		this.freeCount = 5;
 		this.recommendCount = 33;
 		this.role = Role.USER;
+		this.isRecommend = false;
 	}
 
 	public static User create(String nickname, String email, String password, String university, String major) {
@@ -65,4 +68,21 @@ public class User extends BaseEntity {
 		this.freeCount--;
 	}
 
+	public void receiveRecommend() {
+		this.freeCount += 3;
+		this.recommendCount--;
+	}
+
+	public void recommendUser() {
+		this.freeCount++;
+		this.isRecommend = true;
+	}
+
+	public boolean canReceiveRecommendation() {
+		return this.recommendCount > 0;
+	}
+
+	public boolean canRecommend() {
+		return !this.isRecommend;
+	}
 }

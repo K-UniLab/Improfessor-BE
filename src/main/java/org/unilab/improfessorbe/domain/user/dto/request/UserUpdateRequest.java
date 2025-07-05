@@ -21,4 +21,6 @@ public class UserUpdateRequest {
 
 	private String major;
 
+	private String recommendNickname;
+
 }
