@@ -52,13 +52,14 @@ public class ProblemTextParser {
 				JsonNode problemNode = jsonArray.get(i);
 				Problem problem = parseSingleProblem(problemNode, i + 1);
 				problems.add(problem);
-				log.info("문제 {} 파싱 완료", problem.getNumber());
 			}
 
 		} catch (CustomException e) {
 			throw e;
 		} catch (JsonProcessingException e) {
 			log.error("JSON 파싱 에러: {}", e.getMessage());
+			log.info("응답 내용: {}", problemText);
+			log.info("=== Gemini 응답 전체 내용 끝 ===");
 			throw new CustomException(ErrorCode.PROBLEM_JSON_PARSING_ERROR);
 		} catch (Exception e) {
 			log.error("문제 텍스트 파싱 중 예상치 못한 에러", e);
@@ -80,14 +81,14 @@ public class ProblemTextParser {
 
 			// JSON 코드 블록 제거
 			if (cleanText.startsWith("```json")) {
-				cleanText = cleanText.substring(7);
+				cleanText = cleanText.substring(7).trim();
 			}
 			if (cleanText.endsWith("```")) {
-				cleanText = cleanText.substring(0, cleanText.length() - 3);
+				cleanText = cleanText.substring(0, cleanText.length() - 3).trim();
 			}
 
 			// 이스케이프된 따옴표 처리
-			cleanText = cleanText.replace("\\\"", "\"");
+			cleanText = cleanText.replace("\\\"", "'");
 
 			cleanText = cleanText.trim();
 

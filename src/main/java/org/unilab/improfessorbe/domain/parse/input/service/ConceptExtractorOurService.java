@@ -54,7 +54,7 @@ public class ConceptExtractorOurService {
 		List<String> keywords = extractKeywords(preprocessedText, keywordCount);
 		long keywordTime = System.currentTimeMillis() - keywordStartTime;
 		log.info("키워드 추출 완료 - {}개 추출, 소요시간: {}ms", keywords.size(), keywordTime);
-		log.info("추출된 키워드: {}", keywords);
+		// log.info("추출된 키워드: {}", keywords);
 
 		// 문장 추출
 		long sentenceStartTime = System.currentTimeMillis();
@@ -62,10 +62,9 @@ public class ConceptExtractorOurService {
 		long sentenceTime = System.currentTimeMillis() - sentenceStartTime;
 		log.info("문장 추출 완료 - {}개 추출, 소요시간: {}ms", importantSentences.size(), sentenceTime);
 
-		log.info("추출된 중요 문장 {}개:", importantSentences.size());
-		for (int i = 0; i < importantSentences.size(); i++) {
+		/*for (int i = 0; i < importantSentences.size(); i++) {
 			log.info("  [{}] {}", i + 1, importantSentences.get(i));
-		}
+		}*/
 
 		ConceptExtractionResult result = ConceptExtractionResult.builder()
 			.keywords(keywords)
