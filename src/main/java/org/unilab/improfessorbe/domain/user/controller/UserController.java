@@ -103,7 +103,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}")
-	public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+	public ResponseEntity<ApiResponse<UserResponse>> getUser(
 		@PathVariable Long userId
 	){
 		UserResponse userResponse = userService.getUser(userId);
