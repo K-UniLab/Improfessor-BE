@@ -155,10 +155,10 @@ public class UserService {
 		User user = userRepository.findByUserIdAndDeletedAtIsNull(userUpdateRequest.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		String encodedPassword = passwordEncoder.encode(userUpdateRequest.getPassword());
+		//String encodedPassword = passwordEncoder.encode(userUpdateRequest.getPassword());
 
 		user.updateUser(
-			encodedPassword,
+			//encodedPassword,
 			userUpdateRequest.getUniversity(),
 			userUpdateRequest.getMajor()
 		);
@@ -173,7 +173,6 @@ public class UserService {
 	public UserResponse getUser(Long userId) {
 		User user = userRepository.findByUserIdAndDeletedAtIsNull(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
 		return UserResponse.of(user);
 	}
 

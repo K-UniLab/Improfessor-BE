@@ -11,7 +11,6 @@ public class UserResponse {
 	private Long userId;
 	private String nickname;
 	private String email;
-	private String password;
 	private String university;
 	private String major;
 	private Integer freeCount;
@@ -23,7 +22,6 @@ public class UserResponse {
 			.userId(user.getUserId())
 			.nickname(user.getNickname())
 			.email(user.getEmail())
-			.password(user.getPassword())
 			.university(user.getUniversity())
 			.major(user.getMajor())
 			.freeCount(user.getFreeCount())

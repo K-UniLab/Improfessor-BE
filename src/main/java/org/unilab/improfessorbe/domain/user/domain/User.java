@@ -58,8 +58,8 @@ public class User extends BaseEntity {
 		return new User(nickname, email, password, university, major);
 	}
 
-	public void updateUser(String password, String university, String major) {
-		this.password = password;
+	public void updateUser(String university, String major) {
+		//this.password = password;
 		this.university = university;
 		this.major = major;
 	}
