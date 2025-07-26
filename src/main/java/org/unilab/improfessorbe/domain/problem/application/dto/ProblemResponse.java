@@ -9,7 +9,6 @@ import lombok.Getter;
 @Getter
 public class ProblemResponse {
 
-	//제목, 내용, 풀이과정, 정답
 	private String number;
 	private String content;
 	private String description;

@@ -12,30 +12,23 @@ import lombok.ToString;
 @ToString
 public class ConceptExtractionResult {
 
-	// 추출된 키워드 목록
 	private final List<String> keywords;
-	// 추출된 문장 목록
 	private final List<String> importantSentences;
-	//전처리 전 텍스트 길이
 	private final int originalTextLength;
 
-	//추출 성공 여부
 	public boolean isSuccessful() {
 		return (keywords != null && !keywords.isEmpty()) ||
 			(importantSentences != null && !importantSentences.isEmpty());
 	}
 
-	//추출된 키워드 개수
 	public int getKeywordCount() {
 		return keywords != null ? keywords.size() : 0;
 	}
 
-	//추출된 문장 개수
 	public int getSentenceCount() {
 		return importantSentences != null ? importantSentences.size() : 0;
 	}
 
-	//빈 결과 객체 생성
 	public static ConceptExtractionResult empty() {
 		return ConceptExtractionResult.builder()
 			.keywords(Collections.emptyList())
@@ -44,13 +37,11 @@ public class ConceptExtractionResult {
 			.build();
 	}
 
-	//결과 요약 정보
 	public String getSummary() {
 		return String.format("키워드 %d개, 중요문장 %d개 추출 (원본 %d자)",
 			getKeywordCount(), getSentenceCount(), originalTextLength);
 	}
 
-	//String으로 변경
 	public String toFormattedString() {
 		if (!isSuccessful()) {
 			return "개념 추출에 실패했습니다.";

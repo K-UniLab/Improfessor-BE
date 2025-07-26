@@ -13,7 +13,6 @@ public class ProblemGenerationResponse {
 	private int problemCount;
 	private String message;
 
-	// 편의 메서드
 	public static ProblemGenerationResponse of(String downloadKey, List<ProblemResponse> problems) {
 		return ProblemGenerationResponse.builder()
 			.downloadKey(downloadKey)
