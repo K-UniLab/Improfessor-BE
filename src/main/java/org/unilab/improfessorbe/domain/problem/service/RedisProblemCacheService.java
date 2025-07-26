@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.problem.application.service;
+package org.unilab.improfessorbe.domain.problem.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.unilab.improfessorbe.domain.problem.application.dto.CachedProblemDto;
-import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
+import org.unilab.improfessorbe.domain.problem.dto.CachedProblemDto;
+import org.unilab.improfessorbe.domain.problem.dto.ProblemResponse;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 

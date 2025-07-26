@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.problem.application.dto;
+package org.unilab.improfessorbe.domain.problem.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

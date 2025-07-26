@@ -1,12 +1,12 @@
-package org.unilab.improfessorbe.domain.problem.application.service;
+package org.unilab.improfessorbe.domain.problem.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.unilab.improfessorbe.domain.problem.application.dto.CachedProblemDto;
-import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
+import org.unilab.improfessorbe.domain.problem.dto.CachedProblemDto;
+import org.unilab.improfessorbe.domain.problem.dto.ProblemResponse;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 

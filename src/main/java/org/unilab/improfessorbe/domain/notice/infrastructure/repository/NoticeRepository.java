@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.notice.repository;
+package org.unilab.improfessorbe.domain.notice.infrastructure.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.unilab.improfessorbe.domain.notice.domain.Notice;

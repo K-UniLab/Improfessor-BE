@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.problem.infrastructure.domain;
+package org.unilab.improfessorbe.domain.problem.domain;
 
 import lombok.Getter;
 

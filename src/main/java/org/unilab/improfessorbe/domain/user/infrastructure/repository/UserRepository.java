@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.user.repository;
+package org.unilab.improfessorbe.domain.user.infrastructure.repository;
 
 import java.util.Optional;
 

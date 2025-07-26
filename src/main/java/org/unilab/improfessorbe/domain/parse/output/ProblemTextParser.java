@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
-import org.unilab.improfessorbe.domain.problem.infrastructure.domain.Problem;
+import org.unilab.improfessorbe.domain.problem.domain.Problem;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 

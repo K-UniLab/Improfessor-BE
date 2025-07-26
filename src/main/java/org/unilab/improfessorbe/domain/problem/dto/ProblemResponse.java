@@ -1,6 +1,6 @@
-package org.unilab.improfessorbe.domain.problem.application.dto;
+package org.unilab.improfessorbe.domain.problem.dto;
 
-import org.unilab.improfessorbe.domain.problem.infrastructure.domain.Problem;
+import org.unilab.improfessorbe.domain.problem.domain.Problem;
 
 import lombok.Builder;
 import lombok.Getter;

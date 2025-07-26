@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.problem.application.service;
+package org.unilab.improfessorbe.domain.problem.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -17,11 +17,11 @@ import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorOurSe
 import org.unilab.improfessorbe.domain.parse.input.service.FileParseService;
 import org.unilab.improfessorbe.domain.parse.output.PdfExportService;
 import org.unilab.improfessorbe.domain.parse.output.ProblemTextParser;
-import org.unilab.improfessorbe.domain.problem.application.dto.CachedProblemDto;
-import org.unilab.improfessorbe.domain.problem.application.dto.ProblemDownloadResponse;
-import org.unilab.improfessorbe.domain.problem.application.dto.ProblemGenerationResponse;
-import org.unilab.improfessorbe.domain.problem.application.dto.ProblemResponse;
-import org.unilab.improfessorbe.domain.problem.infrastructure.domain.Problem;
+import org.unilab.improfessorbe.domain.problem.dto.CachedProblemDto;
+import org.unilab.improfessorbe.domain.problem.dto.ProblemDownloadResponse;
+import org.unilab.improfessorbe.domain.problem.dto.ProblemGenerationResponse;
+import org.unilab.improfessorbe.domain.problem.dto.ProblemResponse;
+import org.unilab.improfessorbe.domain.problem.domain.Problem;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.gemini.GeminiApiClient;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.exception.CustomException;
