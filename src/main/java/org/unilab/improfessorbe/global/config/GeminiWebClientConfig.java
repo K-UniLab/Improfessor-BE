@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfig {
+public class GeminiWebClientConfig {
 
 	@Value("${gemini.api.base-url}")
 	private String geminiBaseUrl;
