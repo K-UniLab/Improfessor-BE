@@ -153,7 +153,7 @@ public class ProblemService {
 
 			List<ProblemResponse> responses = new ArrayList<>();
 			for (Problem problem : problems) {
-				responses.add(ProblemResponse.toResponse(problem));
+				responses.add(ProblemResponse.of(problem));
 			}
 
 			return responses;

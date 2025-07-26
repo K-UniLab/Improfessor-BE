@@ -14,7 +14,7 @@ public class ProblemResponse {
 	private String description;
 	private String answer;
 
-	public static ProblemResponse toResponse(Problem problem) {
+	public static ProblemResponse of(Problem problem) {
 		return ProblemResponse.builder()
 			.number(problem.getNumber())
 			.content(problem.getContent())
