@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.unilab.improfessorbe.domain.user.domain.User;
-import org.unilab.improfessorbe.domain.user.repository.UserRepository;
+import org.unilab.improfessorbe.domain.user.infrastructure.repository.UserRepository;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 
