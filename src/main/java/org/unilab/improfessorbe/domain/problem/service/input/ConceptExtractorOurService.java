@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.parse.input.service;
+package org.unilab.improfessorbe.domain.problem.service.input;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.unilab.improfessorbe.domain.parse.dto.ConceptExtractionResult;
+import org.unilab.improfessorbe.domain.problem.dto.ConceptExtractionResult;
 
 import lombok.extern.slf4j.Slf4j;
 

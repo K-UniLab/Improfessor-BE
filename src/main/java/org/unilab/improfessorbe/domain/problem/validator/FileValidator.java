@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.parse.input.validation;
+package org.unilab.improfessorbe.domain.problem.validator;
 
 import java.util.Set;
 

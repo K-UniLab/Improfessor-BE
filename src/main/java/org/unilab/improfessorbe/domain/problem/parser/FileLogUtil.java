@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.parse.util;
+package org.unilab.improfessorbe.domain.problem.parser;
 
 import java.util.List;
 

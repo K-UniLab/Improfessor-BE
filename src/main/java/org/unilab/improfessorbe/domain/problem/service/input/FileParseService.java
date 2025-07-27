@@ -1,13 +1,13 @@
-package org.unilab.improfessorbe.domain.parse.input.service;
+package org.unilab.improfessorbe.domain.problem.service.input;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.unilab.improfessorbe.domain.parse.dto.FileParseResult;
-import org.unilab.improfessorbe.domain.parse.input.convert.FileParserManager;
-import org.unilab.improfessorbe.domain.parse.input.validation.FileValidator;
+import org.unilab.improfessorbe.domain.problem.dto.FileParseResult;
+import org.unilab.improfessorbe.domain.problem.parser.FileParserManager;
+import org.unilab.improfessorbe.domain.problem.validator.FileValidator;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
 

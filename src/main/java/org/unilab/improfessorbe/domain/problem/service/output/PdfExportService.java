@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.parse.output;
+package org.unilab.improfessorbe.domain.problem.service.output;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

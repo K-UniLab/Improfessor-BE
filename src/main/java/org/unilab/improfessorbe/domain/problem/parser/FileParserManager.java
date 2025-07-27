@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.parse.input.convert;
+package org.unilab.improfessorbe.domain.problem.parser;
 
 import java.io.IOException;
 import java.util.List;
