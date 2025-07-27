@@ -29,7 +29,6 @@ public class GeminiApiClient {
 	@Value("${gemini.api.timeout}")
 	private int timeout;
 
-	// 문제 생성 프롬프트 템플릿
 	private static final String PROBLEM_GENERATION_PROMPT = """ 
 		다음을 참고해서 JSON 형식으로 대학교 시험 문제 10개를 생성하세요.
 		    
@@ -64,7 +63,7 @@ public class GeminiApiClient {
 	}
 
 	private String callGemini(String prompt) {
-		// 요청 전 제한 확인
+
 		rateLimitManager.checkRateLimit();
 
 		GeminiDto.Request request = GeminiDto.Request.builder()
@@ -116,7 +115,6 @@ public class GeminiApiClient {
 				throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 			}
 
-			// 토큰 사용량 로깅 추가!
 			logTokenUsage(response);
 
 			if (response.getCandidates() == null || response.getCandidates().isEmpty()) {
@@ -137,7 +135,7 @@ public class GeminiApiClient {
 			return responseText;
 
 		} catch (CustomException e) {
-			throw e;  // CustomException 그대로 전파
+			throw e;
 		} catch (Exception e) {
 			log.error("Gemini 응답 파싱 중 에러 발생", e);
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);

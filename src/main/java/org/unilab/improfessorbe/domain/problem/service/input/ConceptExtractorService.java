@@ -54,17 +54,12 @@ public class ConceptExtractorService {
 		List<String> keywords = extractKeywords(preprocessedText, keywordCount);
 		long keywordTime = System.currentTimeMillis() - keywordStartTime;
 		log.info("키워드 추출 완료 - {}개 추출, 소요시간: {}ms", keywords.size(), keywordTime);
-		// log.info("추출된 키워드: {}", keywords);
 
 		// 문장 추출
 		long sentenceStartTime = System.currentTimeMillis();
 		List<String> importantSentences = extractImportantSentences(preprocessedText, sentenceCount);
 		long sentenceTime = System.currentTimeMillis() - sentenceStartTime;
 		log.info("문장 추출 완료 - {}개 추출, 소요시간: {}ms", importantSentences.size(), sentenceTime);
-
-		/*for (int i = 0; i < importantSentences.size(); i++) {
-			log.info("  [{}] {}", i + 1, importantSentences.get(i));
-		}*/
 
 		ConceptExtractionResult result = ConceptExtractionResult.builder()
 			.keywords(keywords)
@@ -89,7 +84,6 @@ public class ConceptExtractorService {
 			List<String> tokens = tokenize(preprocessedText, stopwords);
 			List<String> keywords = extractKeywordsUsingTextRank(tokens, count);
 
-			log.info("키워드 {}개 추출 완료", keywords.size());
 			return keywords;
 		} catch (Exception e) {
 			log.error("키워드 추출 중 오류 발생: {}", e.getMessage(), e);
@@ -113,7 +107,6 @@ public class ConceptExtractorService {
 				.filter(sentence -> StringUtils.hasText(sentence) && sentence.trim().length() > 10)
 				.collect(Collectors.toList());
 
-			log.info("중요 문장 {}개 추출 완료", filteredSentences.size());
 			return filteredSentences;
 		} catch (Exception e) {
 			log.error("문장 추출 중 오류 발생: {}", e.getMessage(), e);
