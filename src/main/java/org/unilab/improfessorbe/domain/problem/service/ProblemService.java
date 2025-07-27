@@ -11,18 +11,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.unilab.improfessorbe.domain.problem.dto.ConceptExtractionResult;
-import org.unilab.improfessorbe.domain.problem.service.input.ConceptExtractorOurService;
-//import org.unilab.improfessorbe.domain.parse.input.service.ConceptExtractorService;
-import org.unilab.improfessorbe.domain.problem.service.input.FileParseService;
-import org.unilab.improfessorbe.domain.problem.service.output.PdfExportService;
-import org.unilab.improfessorbe.domain.problem.service.output.ProblemTextParser;
+import org.unilab.improfessorbe.domain.problem.domain.Problem;
 import org.unilab.improfessorbe.domain.problem.dto.CachedProblemDto;
+import org.unilab.improfessorbe.domain.problem.dto.ConceptExtractionResult;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemDownloadResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemGenerationResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemResponse;
-import org.unilab.improfessorbe.domain.problem.domain.Problem;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.gemini.GeminiApiClient;
+import org.unilab.improfessorbe.domain.problem.service.input.ConceptExtractorService;
+import org.unilab.improfessorbe.domain.problem.service.input.FileParseService;
+import org.unilab.improfessorbe.domain.problem.service.output.PdfExportService;
+import org.unilab.improfessorbe.domain.problem.service.output.ProblemTextParser;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
@@ -38,8 +37,7 @@ public class ProblemService {
 	private final FileParseService fileParseService;
 	private final GeminiApiClient geminiApiClient;
 	private final ProblemTextParser problemTextParser;
-//	private final ConceptExtractorService conceptExtractorService;
-	private final ConceptExtractorOurService conceptExtractorOurService;
+	private final ConceptExtractorService conceptExtractorService;
 	@Qualifier("redisCache")
 	private final ProblemCacheService problemCacheService;
 	private final PdfExportService pdfExportService;
@@ -145,7 +143,7 @@ public class ProblemService {
 				conceptContent.length(), formatContent.length());
 
 			//ML 추가
-			ConceptExtractionResult result = conceptExtractorOurService.extractConcepts(conceptContent);
+			ConceptExtractionResult result = conceptExtractorService.extractConcepts(conceptContent);
 			String conceptExtraction = result.toFormattedString();
 
 			String problemText = geminiApiClient.generateProblems(conceptExtraction, formatContent);
@@ -165,51 +163,4 @@ public class ProblemService {
 		}
 	}
 
-	/*public String getRawGeneratedProblem(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
-		try {
-			String conceptContent = fileParseService.parseFileList(conceptFiles, "개념");
-			String formatContent = "";
-			if (formatFiles != null) {
-				formatContent = fileParseService.parseFileList(formatFiles, "형식");
-			}
-
-			log.info("개념 파일 글자수: {}개 / 형식 파일 글자수: {}개",
-				conceptContent.length(), formatContent.length());
-
-			String problemText = geminiApiClient.generateProblems(conceptContent, formatContent);
-			return problemText;
-
-		} catch (CustomException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
-		}
-	}
-
-	public String getParseFiles(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
-		try {
-			String conceptContent = fileParseService.parseFileList(conceptFiles, "개념");
-			String formatContent = "";
-			if (formatFiles != null) {
-				formatContent = fileParseService.parseFileList(formatFiles, "형식");
-			}
-
-			log.info("개념 파일 글자수: {}개 / 형식 파일 글자수: {}개",
-				conceptContent.length(), formatContent.length());
-
-			*//*StringBuilder sb = new StringBuilder();
-			sb.append(conceptContent);
-			sb.append(formatContent);*//*
-
-			ConceptExtractionResult result = conceptExtractorService.extractConcepts(conceptContent, 100, 100);
-			String conceptExtraction = result.toFormattedString();
-
-			return conceptExtraction.toString();
-
-		} catch (CustomException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
-		}
-	}*/
 }
