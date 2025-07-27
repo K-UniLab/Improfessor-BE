@@ -42,9 +42,6 @@ public class ConceptExtractorService {
 		}
 
 		long startTime = System.currentTimeMillis();
-		int originalTextLength = text.length();
-		log.info("개념 추출 시작 - 전처리 전 텍스트 길이: {}자, 요청 키워드: {}개, 요청 문장: {}개",
-			originalTextLength, keywordCount, sentenceCount);
 
 		// 텍스트 전처리
 		String preprocessedText = preprocessText(text);

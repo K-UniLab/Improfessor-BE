@@ -30,16 +30,28 @@ public class GeminiApiClient {
 	private int timeout;
 
 	private static final String PROBLEM_GENERATION_PROMPT = """ 
-		다음을 참고해서 JSON 형식으로 대학교 시험 문제 10개를 생성하세요.
+		다음을 참고해서 XML 형식으로 대학교 시험 문제 10개를 생성하세요.
 		    
 		**응답 형식 (반드시 준수):**
-		[{"number":1,"content":"문제내용","description":"풀이과정","answer":"답"},{"number":2,"content":"문제내용","description":"풀이과정","answer":"답"}]
+		<problems>
+		    <problem>
+		        <number>1</number>
+		        <content>문제내용</content>
+		        <description>풀이과정</description>
+		        <answer>답</answer>
+		    </problem>
+		    <problem>
+		        <number>2</number>
+		        <content>문제내용</content>
+		        <description>풀이과정</description>
+		        <answer>답</answer>
+		    </problem>
+		</problems>
 		    
 		**절대 규칙 (위반 시 응답 무효):**
-		1. JSON 배열만 출력 (다른 텍스트, 설명, 주석은 괜찮음)
-		2. 모든 값은 한 줄로 작성 (줄바꿈 문자 사용 금지)
-		3. 문자열 값에서 따옴표(") 사용 절대 금지 - 대신 작은따옴표(') 사용
-		4. 백슬래시(\\) 사용 최소화
+		1. XML 태그 구조만 출력 (다른 텍스트, 설명, 주석 없이)
+		2. 모든 내용은 CDATA 섹션 없이 일반 텍스트로 작성
+		3. 특수문자는 XML 엔티티로 작성해줘 (&lt;, &gt;, &amp;, &quot;, &apos;)
 		    
 		**문제 생성 규칙:**
 		- 문제 내용은 중요한 개념 텍스트를 참고해서 작성
@@ -48,10 +60,7 @@ public class GeminiApiClient {
 		- 객관식 생성 시 기호는 ①, ②, ③, ④, ⑤ 형식 사용
 		- 비슷한 개념을 포함한 문제 중복 생성 금지
 		- 풀이과정과 답을 구체적으로 작성
-		    
-		**예시 (따옴표 처리):**
-		- 잘못된 예: "문자열 \"변수\"의 길이"
-		- 올바른 예: "문자열 '변수'의 길이"
+		- 문제 내용에 따옴표, 수식, 특수문자 자유롭게 사용 가능
 		    
 		- 중요한 개념: %s
 		- 문제 형식: %s
@@ -132,6 +141,7 @@ public class GeminiApiClient {
 				throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 			}
 
+			log.info("gpt 문제 생성 가공 전 텍스트: " + responseText);
 			return responseText;
 
 		} catch (CustomException e) {
