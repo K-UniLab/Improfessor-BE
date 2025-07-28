@@ -1,4 +1,4 @@
-package org.unilab.improfessorbe.domain.problem.parser;
+package org.unilab.improfessorbe.global.util;
 
 import java.util.List;
 
@@ -19,7 +19,6 @@ public class FileLogUtil {
 		double formatSizeMB = calculateTotalSizeMB(formatFiles);
 		double totalSizeMB = conceptSizeMB + formatSizeMB;
 
-		// String.format으로 미리 포맷팅
 		log.info("문제 생성 요청: 개념 파일 {}개 ({} MB), 형식 파일 {}개 ({} MB), 전체: {}개 ({} MB)",
 			conceptCount, String.format("%.3f", conceptSizeMB),
 			formatCount, String.format("%.3f", formatSizeMB),
@@ -61,7 +60,6 @@ public class FileLogUtil {
 			double sizeInMB = file.getSize() / (1000.0 * 1000.0);
 			String fileName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown";
 
-			// 빈 파일 체크 및 로깅
 			if (file.isEmpty()) {
 				log.warn("형식 파일 {}: {} - 빈 파일입니다!", i + 1, fileName);
 			} else {

@@ -75,13 +75,13 @@ public class GeminiDto {
 		@AllArgsConstructor
 		public static class UsageMetadata {
 			@JsonProperty("promptTokenCount")
-			private int promptTokenCount;        // 입력 토큰 수
+			private int promptTokenCount;
 
 			@JsonProperty("candidatesTokenCount")
-			private int candidatesTokenCount;    // 출력 토큰 수
+			private int candidatesTokenCount;
 
 			@JsonProperty("totalTokenCount")
-			private int totalTokenCount;         // 총 토큰 수
+			private int totalTokenCount;
 		}
 	}
 }

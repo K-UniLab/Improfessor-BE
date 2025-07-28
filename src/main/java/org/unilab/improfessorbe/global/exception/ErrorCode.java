@@ -55,11 +55,10 @@ public enum ErrorCode {
 	// Problem(생성된 문제 후처리 중 오류코드)
 	PROBLEM_TEXT_EMPTY("P006", "생성된 문제의 텍스트가 비어있습니다.", HttpStatus.BAD_REQUEST),
 	PROBLEM_TEXT_INVALID_FORMAT("P007", "생성된 문제의 텍스트 형식이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
-	PROBLEM_TEXT_NOT_JSON_ARRAY("P008", "생성된 문제의 텍스트가 JSON 배열 형식이 아닙니다.", HttpStatus.BAD_REQUEST),
-	PROBLEM_TEXT_NO_PROBLEMS("P009", "json으로 파싱에 성공한 문제가 없습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_TEXT_NO_PROBLEMS("P009", "XML으로 파싱에 성공한 문제가 없습니다.", HttpStatus.BAD_REQUEST),
 	PROBLEM_REQUIRED_FIELD_MISSING("P010", "생성된 문제의 필수 필드가 누락되었습니다.", HttpStatus.BAD_REQUEST),
 	PROBLEM_CONTENT_EMPTY("P011", "생성된 문제의 특정 필드의 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
-	PROBLEM_JSON_PARSING_ERROR("P012", "생성된 문제의 JSON 파싱에 실패했습니다.", HttpStatus.BAD_REQUEST),
+	PROBLEM_XML_PARSING_ERROR("P012", "생성된 문제의 XML 파싱에 실패했습니다.", HttpStatus.BAD_REQUEST),
 
 	// Gemini
 	GEMINI_RATE_LIMIT_EXCEEDED("G001", "Gemini 분당 횟수 초과, 문제 생성을 잠시 후에 다시 시도해주세요.", HttpStatus.BAD_REQUEST),
