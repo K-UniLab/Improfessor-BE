@@ -43,6 +43,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 			// 프론트엔드로 리다이렉트 (토큰을 쿼리 파라미터로 전달)
 			String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
+				.queryParam("grant_type", jwtToken.getGrantType())
 				.queryParam("accessToken", jwtToken.getAccessToken())
 				.queryParam("refreshToken", jwtToken.getRefreshToken())
 				.build().toUriString();
