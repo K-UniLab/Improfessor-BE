@@ -17,9 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.unilab.improfessorbe.domain.user.service.CustomOAuth2UserService;
+import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.security.jwt.JwtAuthenticationFilter;
 import org.unilab.improfessorbe.global.security.jwt.JwtExceptionFilter;
 import org.unilab.improfessorbe.global.security.jwt.JwtTokenProvider;
+import org.unilab.improfessorbe.global.security.oauth2.handler.OAuth2LoginFailureHandler;
+import org.unilab.improfessorbe.global.security.oauth2.handler.OAuth2LoginSuccessHandler;
+import org.unilab.improfessorbe.global.util.RedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,22 +40,52 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+	public CustomOAuth2UserService customOAuth2UserService(UserService userService) {
+		return new CustomOAuth2UserService(userService);
+	}
+
+	@Bean
+	public OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler(JwtTokenProvider jwtTokenProvider, RedisUtil redisUtil) {
+		return new OAuth2LoginSuccessHandler(jwtTokenProvider, redisUtil);
+	}
+
+	@Bean
+	public OAuth2LoginFailureHandler oAuth2LoginFailureHandler() {
+		return new OAuth2LoginFailureHandler();
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+		CustomOAuth2UserService customOAuth2UserService, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler,
+		OAuth2LoginFailureHandler oAuth2LoginFailureHandler) throws Exception {
 		httpSecurity
 			.csrf(csrf -> csrf.disable())
 			.httpBasic(httpBasic -> httpBasic.disable())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/", "/api/users/register", "/api/users/login", "/api/users/refresh-token", "/api/users/email/send-verification",
-					"/api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
-				.requestMatchers("/admin").hasRole("ADMIN")
-				.anyRequest().authenticated()
+				.requestMatchers("/", "/api/users/register", "/api/users/login/**", "/api/users/refresh-token",
+					"/api/users/email/send-verification",
+					"/api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health", "/oauth2/**",
+					"/login/oauth2/**")
+				.permitAll() // 테스트용 잠시 "/api/test/public", "/index.html", "api/test/logout/success"
+				.requestMatchers("/admin")
+				.hasRole("ADMIN")
+				.anyRequest()
+				.authenticated()
+			)
+			.oauth2Login(oauth2 -> oauth2
+				.userInfoEndpoint(userInfo -> userInfo
+					.userService(customOAuth2UserService)
+				)
+				.successHandler(oAuth2LoginSuccessHandler)
+				.failureHandler(oAuth2LoginFailureHandler)
 			)
 			.formLogin(form -> form.disable())
 			.logout(logout -> logout.permitAll())
 			.cors(configurer -> configurer.configurationSource(corsConfigurationSource()));
 
-		httpSecurity.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+		httpSecurity.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+				UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
 
 		return httpSecurity.build();
@@ -63,7 +98,8 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowCredentials(true);
 		corsConfiguration.setAllowedOrigins(
-			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://api.improfessor.co.kr", "https://improfessor.vercel.app/")
+			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://api.improfessor.co.kr",
+				"https://improfessor.vercel.app/")
 		);
 
 		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
@@ -74,7 +110,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws
+		Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 }
