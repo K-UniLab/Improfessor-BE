@@ -20,11 +20,8 @@ import org.unilab.improfessorbe.domain.user.dto.response.UserLoginResponse;
 import org.unilab.improfessorbe.domain.user.dto.response.UserResponse;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
-import org.unilab.improfessorbe.global.exception.CustomException;
-import org.unilab.improfessorbe.global.exception.ErrorCode;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -47,15 +44,16 @@ public class UserController {
 	@PostMapping("/email/verify")
 	public ResponseEntity<ApiResponse<EmailVerificationResponse>> verifyEmail(
 		@RequestBody @Valid EmailVerificationRequest emailVerificationRequest
-	){
-		EmailVerificationResponse emailVerificationResponse = userService.verifyEmail(emailVerificationRequest.getEmail(), emailVerificationRequest.getCode());
+	) {
+		EmailVerificationResponse emailVerificationResponse = userService.verifyEmail(
+			emailVerificationRequest.getEmail(), emailVerificationRequest.getCode());
 		return ResponseEntity.ok(ApiResponse.success(emailVerificationResponse));
 	}
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<Void>> register(
 		@RequestBody @Valid UserRegisterRequest userRegisterRequest
-	){
+	) {
 		userService.register(userRegisterRequest);
 		return ResponseEntity.ok(ApiResponse.success());
 	}
@@ -105,7 +103,7 @@ public class UserController {
 	@GetMapping("/{userId}")
 	public ResponseEntity<ApiResponse<UserResponse>> getUser(
 		@PathVariable Long userId
-	){
+	) {
 		UserResponse userResponse = userService.getUser(userId);
 		return ResponseEntity.ok(ApiResponse.success(userResponse));
 	}
@@ -113,7 +111,7 @@ public class UserController {
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<ApiResponse<UserResponse>> deleteUser(
 		@PathVariable Long userId
-	){
+	) {
 		userService.deleteUser(userId);
 		return ResponseEntity.ok(ApiResponse.success());
 	}

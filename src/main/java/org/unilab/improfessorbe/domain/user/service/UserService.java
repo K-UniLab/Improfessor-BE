@@ -216,4 +216,15 @@ public class UserService {
 		user.decrementFreeCount();
 		userRepository.save(user);
 	}
+
+	@Transactional
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
+
+	public Optional<User> findByEmailAndDeletedAtIsNull(String email) {
+		Optional<User> user = userRepository.findByEmailAndDeletedAtIsNull(email);
+		return user;
+	}
+
 }
