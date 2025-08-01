@@ -42,8 +42,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'com.hankcs:hanlp:portable-1.8.4'
-
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
     implementation 'com.itextpdf:itext7-core:7.2.5'
@@ -51,6 +49,7 @@ dependencies {
     implementation 'com.itextpdf:font-asian:7.2.5'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
