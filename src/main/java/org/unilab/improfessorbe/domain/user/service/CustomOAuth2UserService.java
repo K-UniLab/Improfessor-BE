@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.improfessorbe.domain.user.domain.User;
+import org.unilab.improfessorbe.domain.user.infrastructure.repository.UserRepository;
 import org.unilab.improfessorbe.global.security.oauth2.CustomOAuth2User;
 import org.unilab.improfessorbe.global.security.oauth2.userInfo.OAuth2UserInfo;
 import org.unilab.improfessorbe.global.security.oauth2.userInfo.OAuth2UserInfoFactory;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-	private final UserService userService;
+	private final UserRepository userRepository;
 
 	@Transactional
 	@Override
@@ -39,14 +40,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oAuth2User.getAttributes(),
 			userNameAttributeName);
 
-		// 사용자 처리 (신규 가입 또는 기존 사용자 업데이트)
 		User user = processOAuth2User(userInfo);
 
 		return new CustomOAuth2User(oAuth2User, user.getEmail(), registrationId, userNameAttributeName);
 	}
 
 	private User processOAuth2User(OAuth2UserInfo userInfo) {
-		Optional<User> userOptional = userService.findByEmailAndDeletedAtIsNull(userInfo.getEmail());
+		Optional<User> userOptional = userRepository.findByEmailAndDeletedAtIsNull(userInfo.getEmail());
 
 		if (userOptional.isPresent()) {
 			User existingUser = userOptional.get();
@@ -64,7 +64,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			User newUser = User.createOAuth2User(uniqueNickname, userInfo.getEmail(), userInfo.getProvider(),
 				userInfo.getId());
 			log.info("새 사용자 생성. nickname:" + uniqueNickname + " email: " + userInfo.getEmail());
-			return userService.saveUser(newUser);
+			return userRepository.save(newUser);
 		}
 	}
 
@@ -72,5 +72,4 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		String hash = DigestUtils.md5Hex(providerId).substring(0, 6);
 		return provider + "_" + hash;
 	}
-
 }

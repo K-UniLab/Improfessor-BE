@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.unilab.improfessorbe.domain.user.infrastructure.repository.UserRepository;
 import org.unilab.improfessorbe.domain.user.service.CustomOAuth2UserService;
-import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.security.jwt.JwtAuthenticationFilter;
 import org.unilab.improfessorbe.global.security.jwt.JwtExceptionFilter;
 import org.unilab.improfessorbe.global.security.jwt.JwtTokenProvider;
@@ -40,8 +40,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public CustomOAuth2UserService customOAuth2UserService(UserService userService) {
-		return new CustomOAuth2UserService(userService);
+	public CustomOAuth2UserService customOAuth2UserService(UserRepository userRepository) {
+		return new CustomOAuth2UserService(userRepository);
 	}
 
 	@Bean
