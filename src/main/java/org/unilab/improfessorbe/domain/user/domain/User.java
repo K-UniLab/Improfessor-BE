@@ -38,6 +38,10 @@ public class User extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
 
+	private String provider;
+
+	private String providerId;
+
 	public enum Role {
 		ADMIN, USER
 	}
@@ -52,10 +56,30 @@ public class User extends BaseEntity {
 		this.recommendCount = 33;
 		this.role = Role.USER;
 		this.isRecommend = false;
+		this.provider = "local";
+		this.providerId = null;
+	}
+
+	private User(String nickname, String email, String provider, String providerId) {
+		this.nickname = nickname;
+		this.email = email;
+		this.password = null;
+		this.university = null;
+		this.major = null;
+		this.freeCount = 5;
+		this.recommendCount = 33;
+		this.role = Role.USER;
+		this.isRecommend = false;
+		this.provider = provider;
+		this.providerId = providerId;
 	}
 
 	public static User create(String nickname, String email, String password, String university, String major) {
 		return new User(nickname, email, password, university, major);
+	}
+
+	public static User createOAuth2User(String nickname, String email, String provider, String providerId) {
+		return new User(nickname, email, provider, providerId);
 	}
 
 	public void updateUser(String university, String major) {
@@ -83,5 +107,13 @@ public class User extends BaseEntity {
 
 	public boolean canRecommend() {
 		return !this.isRecommend;
+	}
+
+	public void updateProvider(String provider) {
+		this.provider = provider;
+	}
+
+	public void updateProviderId(String providerId) {
+		this.providerId = providerId;
 	}
 }
