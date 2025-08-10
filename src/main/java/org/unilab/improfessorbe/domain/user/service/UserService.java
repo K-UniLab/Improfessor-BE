@@ -1,9 +1,6 @@
 package org.unilab.improfessorbe.domain.user.service;
 
 import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
