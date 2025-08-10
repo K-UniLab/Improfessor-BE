@@ -1,6 +1,7 @@
 package org.unilab.improfessorbe.domain.user.service;
 
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,8 +49,7 @@ public class UserService {
 		validateDuplicateEmail(email);
 
 		String title = "나는 교수다 서비스 회원가입 인증 메일";
-		String code = UUID.randomUUID().toString();
-		log.info("code: {}", code);
+		String code = generateRandomCode();
 		String text = "인증번호: " + code;
 
 		redisUtil.setDataExpire(email, code, EXPIRATION);
@@ -60,7 +60,6 @@ public class UserService {
 			log.error("Error: {}", e);
 			throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR);
 		}
-
 	}
 
 	public EmailVerificationResponse verifyEmail(String email, String code) {
@@ -183,6 +182,19 @@ public class UserService {
 		user.markAsDeleted();
 	}
 
+	@Transactional
+	public void decrementFreeCount(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		if (user.getFreeCount() <= 0) {
+			throw new CustomException(ErrorCode.INSUFFICIENT_FREE_COUNT);
+		}
+
+		user.decrementFreeCount();
+		userRepository.save(user);
+	}
+
 	private void validateDuplicateEmail(String email) {
 		Optional<User> user = userRepository.findByEmailAndDeletedAtIsNull(email);
 		if (user.isPresent()) {
@@ -204,16 +216,26 @@ public class UserService {
 		return user.getFreeCount() > 0;
 	}
 
-	@Transactional
-	public void decrementFreeCount(Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	private String generateRandomCode() {
+		final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		final String NUMBERS = "0123456789";
+		java.security.SecureRandom random = new java.security.SecureRandom();
+		java.util.List<Character> chars = new java.util.ArrayList<>();
 
-		if (user.getFreeCount() <= 0) {
-			throw new CustomException(ErrorCode.INSUFFICIENT_FREE_COUNT);
+		for (int i = 0; i < 3; i++) {
+			chars.add(LETTERS.charAt(random.nextInt(LETTERS.length())));
+		}
+		for (int i = 0; i < 3; i++) {
+			chars.add(NUMBERS.charAt(random.nextInt(NUMBERS.length())));
 		}
 
-		user.decrementFreeCount();
-		userRepository.save(user);
+		java.util.Collections.shuffle(chars, random);
+
+		StringBuilder sb = new StringBuilder();
+		for (char c : chars) {
+			sb.append(c);
+		}
+
+		return sb.toString();
 	}
 }
