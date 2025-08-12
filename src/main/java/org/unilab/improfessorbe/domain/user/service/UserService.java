@@ -1,5 +1,8 @@
 package org.unilab.improfessorbe.domain.user.service;
 
+import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -216,8 +219,8 @@ public class UserService {
 	private String generateRandomCode() {
 		final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		final String NUMBERS = "0123456789";
-		java.security.SecureRandom random = new java.security.SecureRandom();
-		java.util.List<Character> chars = new java.util.ArrayList<>();
+		SecureRandom random = new java.security.SecureRandom();
+		List<Character> chars = new java.util.ArrayList<>();
 
 		for (int i = 0; i < 3; i++) {
 			chars.add(LETTERS.charAt(random.nextInt(LETTERS.length())));
@@ -226,7 +229,7 @@ public class UserService {
 			chars.add(NUMBERS.charAt(random.nextInt(NUMBERS.length())));
 		}
 
-		java.util.Collections.shuffle(chars, random);
+		Collections.shuffle(chars, random);
 
 		StringBuilder sb = new StringBuilder();
 		for (char c : chars) {
