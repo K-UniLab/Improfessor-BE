@@ -38,7 +38,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 			// Refresh Token을 Redis에 저장
 			long refreshTokenExpirationMillis = 604800000L; // 7일
-			redisUtil.setDataExpire(oAuth2User.getEmail(), jwtToken.getRefreshToken(),
+			redisUtil.setDataExpire(oAuth2User.getName(), jwtToken.getRefreshToken(),
 				refreshTokenExpirationMillis / 1000);
 
 			// 프론트엔드로 리다이렉트 (토큰을 쿼리 파라미터로 전달)
