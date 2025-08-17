@@ -13,6 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
 	private OAuth2User oauth2User;
+	private Long userId;
 	private String email;
 	private String provider;
 	private String userNameAttributeName;
@@ -29,6 +30,6 @@ public class CustomOAuth2User implements OAuth2User {
 
 	@Override
 	public String getName() {
-		return oauth2User.getAttribute(userNameAttributeName).toString();
+		return String.valueOf(userId);
 	}
 }

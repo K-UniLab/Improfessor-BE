@@ -42,7 +42,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		User user = processOAuth2User(userInfo);
 
-		return new CustomOAuth2User(oAuth2User, user.getEmail(), registrationId, userNameAttributeName);
+		return new CustomOAuth2User(oAuth2User, user.getUserId(), user.getEmail(),
+			registrationId, userNameAttributeName);
 	}
 
 	private User processOAuth2User(OAuth2UserInfo userInfo) {
