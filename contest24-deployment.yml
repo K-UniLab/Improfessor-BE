@@ -1,0 +1,84 @@
+# contest24-deployment.yaml - Secret/ConfigMap 환경변수 연동
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contest24-backend
+  labels:
+    app: contest24-backend
+    tier: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contest24-backend
+  template:
+    metadata:
+      labels:
+        app: contest24-backend
+        tier: application
+    spec:
+      containers:
+        - name: backend
+          image: contest24-registry.kr.ncr.ntruss.com/contest24-backend:latest
+          ports:
+            - containerPort: 8080
+
+          # Secret과 ConfigMap에서 모든 환경변수 자동 주입
+          envFrom:
+            - secretRef:
+                name: contest24-secrets    # 민감 정보
+            - configMapRef:
+                name: contest24-config     # 일반 설정
+
+          # 추가 환경변수 (필요시)
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+
+          # Health Check 제거 (나중에 추가)
+
+      # Container Registry 인증
+      imagePullSecrets:
+        - name: regcred
+
+---
+# 새로운 Service (기존과 분리)
+apiVersion: v1
+kind: Service
+metadata:
+  name: contest24-backend-service
+  labels:
+    app: contest24-backend
+spec:
+  selector:
+    app: contest24-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+# LoadBalancer (외부 접근용)
+apiVersion: v1
+kind: Service
+metadata:
+  name: contest24-backend-lb
+  labels:
+    app: contest24-backend
+spec:
+  selector:
+    app: contest24-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
