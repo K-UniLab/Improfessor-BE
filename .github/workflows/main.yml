@@ -16,31 +16,31 @@ jobs:
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     
     steps:
-    - name: Checkout develop branch
-      uses: actions/checkout@v4
-      with:
-        ref: develop
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Configure Git
-      run: |
-        git config --global user.name "GitHub Action Bot"
-        git config --global user.email "action@github.com"
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
 
-    - name: Add NCP SourceCommit remote
-      run: |
-        git remote add ncp https://${{ secrets.NCP_GIT_USERNAME }}:${{ secrets.NCP_GIT_PASSWORD }}@zzcaypok.devtools.ncloud.com/3067145/contest24-repo-backend.git
+      - name: Add NCP SourceCommit remote
+        run: |
+          git remote add ncp https://${{ secrets.NCP_GIT_USERNAME }}:${{ secrets.NCP_GIT_PASSWORD }}@devtools.ncloud.com/3067145/contest24-repo-backend.git
 
-    - name: Push develop to NCP master
-      run: |
-        echo "Syncing GitHub develop to NCP SourceCommit master..."
-        git push ncp develop:master --force
-        echo "Successfully synced to NCP SourceCommit!"
-      env:
-        GIT_TERMINAL_PROMPT: 0
+      - name: Push develop to NCP master
+        run: |
+          echo "Syncing GitHub develop to NCP SourceCommit master..."
+          git push ncp develop:master --force
+          echo "Successfully synced to NCP SourceCommit!"
+        env:
+          GIT_TERMINAL_PROMPT: 0
 
-    - name: Notify completion
-      run: |
-        echo "Deployment pipeline triggered!"
-        echo "Check NKS Source for build progress."
+      - name: Notify completion
+        run: |
+          echo "Deployment pipeline triggered!"
+          echo "Check NKS Source for build progress."
