@@ -55,7 +55,7 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: header
-            user-name-attribute: id # Kakao 응답 값 id, connected_at, properties, kakao_account 중 id 지정
+            user-name-attribute: id
 
 app:
   oauth2:
@@ -73,3 +73,15 @@ gemini:
 
 server:
   url: ${SERVER_URL}
+
+management:
+  endpoints:
+    web:
+      base-path: "/"
+      path-mapping:
+        health: ""  # /actuator/health를 /로 매핑
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
