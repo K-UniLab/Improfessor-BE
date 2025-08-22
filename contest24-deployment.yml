@@ -58,6 +58,7 @@ metadata:
   labels:
     app: contest24-backend
 spec:
+  type: NodePort  # ClusterIP → NodePort 변경
   selector:
     app: contest24-backend
   ports:
@@ -65,4 +66,3 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 8080
-  type: ClusterIP
