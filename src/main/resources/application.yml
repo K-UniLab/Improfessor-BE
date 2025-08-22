@@ -73,15 +73,3 @@ gemini:
 
 server:
   url: ${SERVER_URL}
-
-management:
-  endpoints:
-    web:
-      base-path: "/"
-      path-mapping:
-        health: ""  # /actuator/health를 /로 매핑
-      exposure:
-        include: health
-  endpoint:
-    health:
-      show-details: always
