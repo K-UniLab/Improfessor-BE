@@ -3,18 +3,10 @@ name: Sync GitHub to NCP SourceCommit
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-    types: [ closed ]
 
 jobs:
   sync-to-ncp:
     runs-on: ubuntu-latest
-    
-    if: |
-      github.event_name == 'push' || 
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    
     steps:
       - name: Checkout develop branch
         uses: actions/checkout@v4
