@@ -60,7 +60,7 @@ public class SecurityConfig {
 				.requestMatchers("/", "/api/users/register", "/api/users/login/**", "/api/users/refresh-token",
 					"/api/users/email/send-verification",
 					"/api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health", "/oauth2/**",
-					"/login/oauth2/**")
+					"/login/oauth2/**", "/favicon.ico")
 				.permitAll() // 테스트용 잠시 "/api/test/public", "/index.html", "api/test/logout/success"
 				.requestMatchers("/admin")
 				.hasRole("ADMIN")
@@ -92,7 +92,7 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowCredentials(true);
 		corsConfiguration.setAllowedOrigins(
-			List.of("http://localhost:5173", "https://www.improfessor.kro.kr", "https://api.improfessor.kro.kr",
+			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://api.improfessor.co.kr",
 				"https://improfessor.vercel.app/")
 		);
 
