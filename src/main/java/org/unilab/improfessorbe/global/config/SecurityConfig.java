@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.unilab.improfessorbe.domain.user.infrastructure.repository.UserRepository;
 import org.unilab.improfessorbe.domain.user.service.CustomOAuth2UserService;
 import org.unilab.improfessorbe.global.security.jwt.JwtAuthenticationFilter;
 import org.unilab.improfessorbe.global.security.jwt.JwtExceptionFilter;
@@ -37,11 +36,6 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public CustomOAuth2UserService customOAuth2UserService(UserRepository userRepository) {
-		return new CustomOAuth2UserService(userRepository);
 	}
 
 	@Bean
