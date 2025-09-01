@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.unilab.improfessorbe.domain.user.infrastructure.repository.UserRepository;
 import org.unilab.improfessorbe.domain.user.service.CustomOAuth2UserService;
 import org.unilab.improfessorbe.global.security.jwt.JwtAuthenticationFilter;
 import org.unilab.improfessorbe.global.security.jwt.JwtExceptionFilter;
@@ -37,11 +36,6 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public CustomOAuth2UserService customOAuth2UserService(UserRepository userRepository) {
-		return new CustomOAuth2UserService(userRepository);
 	}
 
 	@Bean
@@ -66,7 +60,7 @@ public class SecurityConfig {
 				.requestMatchers("/", "/api/users/register", "/api/users/login/**", "/api/users/refresh-token",
 					"/api/users/email/send-verification",
 					"/api/users/email/verify", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health", "/oauth2/**",
-					"/login/oauth2/**")
+					"/login/oauth2/**", "/favicon.ico")
 				.permitAll() // 테스트용 잠시 "/api/test/public", "/index.html", "api/test/logout/success"
 				.requestMatchers("/admin")
 				.hasRole("ADMIN")
@@ -98,7 +92,7 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowCredentials(true);
 		corsConfiguration.setAllowedOrigins(
-			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://api.improfessor.co.kr",
+			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://api.improfessor.kro.kr",
 				"https://improfessor.vercel.app/")
 		);
 
