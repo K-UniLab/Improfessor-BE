@@ -30,7 +30,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	@Transactional
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-		log.info("=== OAuth2 사용자 로딩 시작 ===");
 
 		DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 		OAuth2User oAuth2User = delegate.loadUser(userRequest);
@@ -41,14 +40,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			.getUserInfoEndpoint()
 			.getUserNameAttributeName();
 
-		log.info("OAuth2 Provider: {}, UserNameAttribute: {}", registrationId, userNameAttributeName);
-
-		// OAuth2 사용자 정보 추출
 		OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId,
 			oAuth2User.getAttributes(), userNameAttributeName);
-
-		log.info("추출된 사용자 정보 - Email: {}, Provider: {}, ProviderId: {}",
-			userInfo.getEmail(), userInfo.getProvider(), userInfo.getId());
 
 		User user = processOAuth2User(userInfo);
 
@@ -59,11 +52,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	}
 
 	private User processOAuth2User(OAuth2UserInfo userInfo) {
-		log.info("=== processOAuth2User 시작 ===");
-		log.info("입력 파라미터 - Email: {}, Provider: {}, ProviderId: {}",
-			userInfo.getEmail(), userInfo.getProvider(), userInfo.getId());
 
-		// 입력 검증
 		if (userInfo.getEmail() == null || userInfo.getEmail().trim().isEmpty()) {
 			log.error("사용자 이메일이 null 또는 빈 값입니다");
 			throw new OAuth2AuthenticationException("사용자 이메일이 필요합니다");
@@ -71,14 +60,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		try {
 			Optional<User> userOptional = userRepository.findByEmailAndDeletedAtIsNull(userInfo.getEmail());
-			log.info("기존 사용자 조회 결과: {}", userOptional.isPresent() ? "존재" : "없음");
 
 			if (userOptional.isPresent()) {
 				User existingUser = userOptional.get();
-				log.info("기존 사용자 발견 - UserId: {}, Provider: {}",
-					existingUser.getUserId(), existingUser.getProvider());
 
-				// 기존 사용자 정보 업데이트
 				if (!existingUser.getProvider().equals(userInfo.getProvider())) {
 					log.info("기존 사용자 provider 업데이트: {} -> {}",
 						existingUser.getProvider(), userInfo.getProvider());
@@ -96,37 +81,23 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	}
 
 	private User createNewUser(OAuth2UserInfo userInfo) {
-		log.info("=== 새 사용자 생성 시작 ===");
 
 		try {
-			// 닉네임 생성
 			String uniqueNickname = generateUniqueNickname(userInfo.getProvider(), userInfo.getId());
-			log.info("생성된 닉네임: {}", uniqueNickname);
 
-			// 닉네임 중복 체크
 			Optional<User> existingNickname = userRepository.findByNicknameAndDeletedAtIsNull(uniqueNickname);
 			boolean nicknameExists = existingNickname.isPresent();
-			log.info("닉네임 중복 여부: {}", nicknameExists);
 
 			if (nicknameExists) {
-				// 중복이면 timestamp 추가
 				uniqueNickname = uniqueNickname + "_" + System.currentTimeMillis();
 				log.info("중복으로 인한 닉네임 변경: {}", uniqueNickname);
 			}
 
-			// 사용자 객체 생성
-			log.info("User.createOAuth2User 호출 시작");
 			User newUser = User.createOAuth2User(uniqueNickname, userInfo.getEmail(),
 				userInfo.getProvider(), userInfo.getId());
-			log.info("사용자 객체 생성 완료 - Nickname: {}, Email: {}, Provider: {}",
-				newUser.getNickname(), newUser.getEmail(), newUser.getProvider());
 
-			// 데이터베이스에 저장
-			log.info("데이터베이스 저장 시작");
 			User savedUser = userRepository.save(newUser);
-			log.info("데이터베이스 저장 완료 - UserId: {}", savedUser.getUserId());
 
-			// 저장 후 즉시 조회로 검증
 			Optional<User> verifyUser = userRepository.findById(savedUser.getUserId());
 			if (verifyUser.isPresent()) {
 				log.info("저장 검증 성공 - 조회된 UserId: {}", verifyUser.get().getUserId());
@@ -160,7 +131,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			return nickname;
 		} catch (Exception e) {
 			log.error("닉네임 생성 실패", e);
-			// fallback 닉네임
 			return provider + "_" + System.currentTimeMillis();
 		}
 	}
