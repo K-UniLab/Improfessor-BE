@@ -8,10 +8,10 @@ metadata:
     environment: test
 data:
   # MySQL 데이터베이스 이름
-  MYSQL_DATABASE: "improfessor-test"
+  MYSQL_DATABASE: "improfessor_test"
 
   # 데이터베이스 URL
-  MYSQL_URL: "jdbc:mysql://mysql-service:3306/improfessor-test?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&connectTimeout=60000&socketTimeout=60000&tcpKeepAlive=true&tcpRcvBuf=32768&tcpSndBuf=32768&tcpTrafficClass=0"
+  MYSQL_URL: "jdbc:mysql://mysql-service:3306/improfessor_test?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&connectTimeout=60000&socketTimeout=60000&tcpKeepAlive=true&tcpRcvBuf=32768&tcpSndBuf=32768&tcpTrafficClass=0"
 
   # Redis 설정
   REDIS_HOST: "redis-service"
