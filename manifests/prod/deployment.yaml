@@ -9,6 +9,14 @@ metadata:
     version: latest
 spec:
   replicas: 2 # 운영환경 로드밸런싱 및 무중단 배포
+
+  # 무중단 배포 전략 설정
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1      # 최대 1개 Pod까지 중단 허용
+      maxSurge: 1           # 최대 1개 Pod 추가 생성 허용
+
   selector:
     matchLabels:
       app: contest24-backend
@@ -20,13 +28,13 @@ spec:
         environment: production
         version: latest
     spec:
-      # 테스트 노드 고정 배포
+      # 운영 노드 고정 배포
       nodeSelector:
         kubernetes.io/hostname: "contest-24-node-2-w-d514"
 
       containers:
         - name: contest24-backend
-          image: contest24-registry.kr.ncr.ntruss.com/contest24-backend:latest
+          image: contest24-registry.kr.ncr.ntruss.com/contest24-backend-prod:latest
 
           ports:
             - name: http
@@ -45,14 +53,43 @@ spec:
               value: "8080"
             - name: ENVIRONMENT
               value: "production"
-          # 리소스 제한(운영환경 이므로 테스트 환경보다 더 높은 사양 설정)
+
+          # 리소스 제한 (노드 리소스 고려한 안전한 설정)
           resources:
             requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
               memory: "1Gi"
               cpu: "500m"
-            limits:
-              memory: "2Gi"
-              cpu: "1000m"
+
+          # 무중단 배포를 위한 헬스체크 설정
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 18  # 3분 대기
 
       # 컨테이너 레지스트리 인증
       imagePullSecrets:
@@ -60,3 +97,6 @@ spec:
 
       # 재시작 정책
       restartPolicy: Always
+
+      # Pod 안전한 종료를 위한 설정
+      terminationGracePeriodSeconds: 60
