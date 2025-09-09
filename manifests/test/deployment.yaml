@@ -36,7 +36,7 @@ spec:
           # 🔧 환경별 Secret/ConfigMap 주입
           envFrom:
             - secretRef:
-                name: contest24-secrets-test    # 테스트 전용 Secret
+                name: contest24-secrets
             - configMapRef:
                 name: contest24-config-test     # 테스트 전용 ConfigMap
 
