@@ -21,4 +21,4 @@ data:
 
   # OAuth2 리다이렉트 URI
   KAKAO_REDIRECT_URI: "https://prod.improfessor.kro.kr/login/oauth2/code/kakao"
-  AUTHORIZED_REDIRECT_URI: "https://improfessor.vercel.app/generate"
+  AUTHORIZED_REDIRECT_URI: "https://impro-1.vercel.app/generate"

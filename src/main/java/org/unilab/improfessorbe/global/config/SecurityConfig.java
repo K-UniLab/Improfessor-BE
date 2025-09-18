@@ -92,8 +92,8 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowCredentials(true);
 		corsConfiguration.setAllowedOrigins(
-			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://api.improfessor.kro.kr",
-				"https://improfessor.vercel.app/")
+			List.of("http://localhost:5173", "https://www.improfessor.co.kr", "https://impro-1.vercel.app",
+				"https://improfessor.vercel.app")
 		);
 
 		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
