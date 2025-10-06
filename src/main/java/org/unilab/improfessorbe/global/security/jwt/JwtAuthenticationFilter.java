@@ -4,11 +4,8 @@ import java.io.IOException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.unilab.improfessorbe.global.exception.CustomException;
-import org.unilab.improfessorbe.global.exception.ErrorCode;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,14 +24,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 
+		String requestURI = request.getRequestURI();
 		String token = resolveToken(request);
 
-		if (token != null && jwtTokenProvider.validateToken(token)) {
-			Authentication authentication = jwtTokenProvider.getAuthentication(token);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
-		else{
-			log.error("token authentication error");
+		if (token != null) {
+			try {
+				if (jwtTokenProvider.validateToken(token)) {
+					Authentication authentication = jwtTokenProvider.getAuthentication(token);
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+					log.debug("JWT authentication success for URI: {}", requestURI);
+				} else {
+					log.error("Token validation failed for URI: {}, Token: {}",
+						requestURI, token.substring(0, Math.min(20, token.length())) + "...");
+				}
+			} catch (Exception e) {
+				log.error("Token authentication error for URI: {}, Error: {}",
+					requestURI, e.getMessage(), e);
+			}
+		} else {
+			log.warn("No token found for URI: {}, Authorization header: {}",
+				requestURI, request.getHeader("Authorization"));
 		}
 
 		filterChain.doFilter(request, response);
