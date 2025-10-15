@@ -73,3 +73,8 @@ gemini:
 
 server:
   url: ${SERVER_URL}
+
+ai:
+  onpremise:
+    url: ${AI_SERVER_URL}
+    timeout: 120000

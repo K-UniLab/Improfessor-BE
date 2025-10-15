@@ -69,7 +69,13 @@ public enum ErrorCode {
 	CACHE_SERIALIZATION_ERROR("C302", "캐시 데이터 직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	CACHE_DESERIALIZATION_ERROR("C303", "캐시 데이터 역직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	DOWNLOAD_LINK_EXPIRED("C304", "다운로드 링크가 만료되었습니다. 문제를 다시 생성해주세요.", HttpStatus.BAD_REQUEST),
-	CACHE_CONNECTION_ERROR("C305", "캐시 서버 연결에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+	CACHE_CONNECTION_ERROR("C305", "캐시 서버 연결에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+	// AI Server
+	AI_SERVER_CONNECTION_FAILED("A001", "AI 서버 연결에 실패했습니다.", HttpStatus.SERVICE_UNAVAILABLE),
+	AI_SERVER_ERROR("A002", "AI 서버 응답 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+	AI_SERVER_TIMEOUT("A003", "AI 서버 응답 시간이 초과되었습니다.", HttpStatus.REQUEST_TIMEOUT),
+	AI_SERVER_INVALID_RESPONSE("A004", "AI 서버로부터 올바르지 않은 응답을 받았습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private final HttpStatus status;
 	private final String code;

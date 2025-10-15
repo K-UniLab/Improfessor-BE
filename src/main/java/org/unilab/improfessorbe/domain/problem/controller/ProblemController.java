@@ -59,6 +59,30 @@ public class ProblemController {
 		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
 	}
 
+	@PostMapping(value = "/ai/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Operation(summary = "문제 생성", description = "(사용중)개념추출, llm, 캐시 적용 모델")
+	public ResponseEntity<ApiResponse<ProblemGenerationResponse>> createProblemWithAiPipeLine(
+		@PathVariable Long userId,
+		@RequestParam("conceptFiles") List<MultipartFile> conceptFiles,
+		@RequestParam(value = "formatFiles", required = false) List<MultipartFile> formatFiles) {
+
+		fileLogUtil.logFileUploadInfo(conceptFiles, formatFiles);
+
+		if (!fileLogUtil.isValidRequest(conceptFiles)) {
+			throw new CustomException(ErrorCode.MISSING_REQUIRED_FIELD);
+		}
+
+		boolean canCreateProblem = userService.checkFreeCount(userId);
+		if (!canCreateProblem) {
+			throw new CustomException(ErrorCode.INSUFFICIENT_FREE_COUNT);
+		}
+
+		ProblemGenerationResponse result = problemService.createProblemWithAiPipeLine(userId, conceptFiles,
+			formatFiles);
+
+		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
+	}
+
 	@GetMapping("/download/{downloadKey}")
 	@Operation(summary = "문제 PDF 다운로드")
 	public ResponseEntity<byte[]> downloadProblemsPdf(@PathVariable String downloadKey) {
