@@ -17,6 +17,7 @@ import org.unilab.improfessorbe.domain.problem.dto.ConceptExtractionResult;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemDownloadResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemGenerationResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemResponse;
+import org.unilab.improfessorbe.domain.problem.infrastructure.external.ai.AiService;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.gemini.GeminiApiClient;
 import org.unilab.improfessorbe.domain.problem.service.input.ConceptExtractorService;
 import org.unilab.improfessorbe.domain.problem.service.input.FileParseService;
@@ -42,6 +43,7 @@ public class ProblemService {
 	private final ProblemCacheService problemCacheService;
 	private final PdfExportService pdfExportService;
 	private final UserService userService;
+	private final AiService aiService;
 
 	@Transactional
 	public ProblemGenerationResponse createProblemWithCache(Long userId, List<MultipartFile> conceptFiles,
@@ -49,6 +51,31 @@ public class ProblemService {
 		try {
 			// 1. 문제 생성
 			List<ProblemResponse> responses = createProblemWithMl(conceptFiles, formatFiles);
+
+			// 2. 캐시 생성 및 저장
+			String originalFileName = conceptFiles.get(0).getOriginalFilename();
+			String downloadKey = problemCacheService.cacheProblems(responses, originalFileName);
+
+			log.info("문제 생성 및 캐시 저장 완료: 총 {}개 문제, 다운로드 키: {}", responses.size(), downloadKey);
+
+			userService.decrementFreeCount(userId);
+
+			return ProblemGenerationResponse.of(downloadKey, responses);
+
+		} catch (CustomException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("문제 생성 및 캐시 저장 중 에러", e);
+			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
+		}
+	}
+
+	@Transactional
+	public ProblemGenerationResponse createProblemWithAiPipeLine(Long userId, List<MultipartFile> conceptFiles,
+		List<MultipartFile> formatFiles) {
+		try {
+			// 1. 문제 생성
+			List<ProblemResponse> responses = aiService.aiPipeLineService(conceptFiles, formatFiles);
 
 			// 2. 캐시 생성 및 저장
 			String originalFileName = conceptFiles.get(0).getOriginalFilename();
