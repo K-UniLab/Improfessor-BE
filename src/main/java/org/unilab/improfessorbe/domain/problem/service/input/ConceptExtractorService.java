@@ -183,6 +183,7 @@ public class ConceptExtractorService {
 		}
 
 		int n = uniq.size();
+		log.info("고유 토큰 수: {}", n);
 		if (n == 0)
 			return Collections.emptyList();
 
