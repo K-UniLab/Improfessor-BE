@@ -35,7 +35,7 @@ public class AiService {
 	@Value("${ai.onpremise.url}")
 	private String aiServerUrl;
 
-	@Value("${ai.onpremise.timeout:60000}")
+	@Value("${ai.onpremise.timeout}")
 	private int timeout;
 
 	public List<ProblemResponse> aiPipeLineService(List<MultipartFile> conceptFiles, List<MultipartFile> formatFiles) {
