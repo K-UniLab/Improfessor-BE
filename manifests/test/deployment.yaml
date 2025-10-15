@@ -45,7 +45,10 @@ spec:
               value: "8080"
             - name: ENVIRONMENT
               value: "test"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xms512m -Xmx768m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
 
+          
           resources:
             requests:
               memory: "512Mi"

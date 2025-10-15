@@ -53,6 +53,8 @@ spec:
               value: "8080"
             - name: ENVIRONMENT
               value: "production"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xms512m -Xmx768m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
 
           # 리소스 제한 (노드 리소스 고려한 안전한 설정)
           resources:
