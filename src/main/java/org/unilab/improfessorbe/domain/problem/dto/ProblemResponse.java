@@ -1,25 +1,23 @@
 package org.unilab.improfessorbe.domain.problem.dto;
 
-import org.unilab.improfessorbe.domain.problem.domain.Problem;
-
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
+@Builder
 public class ProblemResponse {
 
-	private String number;
+	private String type;
 	private String content;
 	private String description;
 	private String answer;
 
-	public static ProblemResponse of(Problem problem) {
+	public static ProblemResponse of(String type, String content, String description, String answer) {
 		return ProblemResponse.builder()
-			.number(problem.getNumber())
-			.content(problem.getContent())
-			.description(problem.getDescription())
-			.answer(problem.getAnswer())
+			.type(type)
+			.content(content)
+			.description(description)
+			.answer(answer)
 			.build();
 	}
 }

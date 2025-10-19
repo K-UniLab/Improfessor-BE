@@ -1,28 +1,25 @@
 package org.unilab.improfessorbe.domain.problem.service;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.problem.domain.Problem;
-import org.unilab.improfessorbe.domain.problem.dto.CachedProblemDto;
 import org.unilab.improfessorbe.domain.problem.dto.ConceptExtractionResult;
-import org.unilab.improfessorbe.domain.problem.dto.ProblemDownloadResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemGenerationResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemResponse;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.ai.AiService;
 import org.unilab.improfessorbe.domain.problem.infrastructure.external.gemini.GeminiApiClient;
+import org.unilab.improfessorbe.domain.problem.infrastructure.repository.ProblemRepository;
 import org.unilab.improfessorbe.domain.problem.service.input.ConceptExtractorService;
 import org.unilab.improfessorbe.domain.problem.service.input.FileParseService;
-import org.unilab.improfessorbe.domain.problem.service.output.PdfExportService;
 import org.unilab.improfessorbe.domain.problem.service.output.ProblemTextParser;
+import org.unilab.improfessorbe.domain.round.domain.Round;
+import org.unilab.improfessorbe.domain.round.service.RoundService;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.exception.CustomException;
 import org.unilab.improfessorbe.global.exception.ErrorCode;
@@ -37,30 +34,44 @@ public class ProblemService {
 
 	private final FileParseService fileParseService;
 	private final GeminiApiClient geminiApiClient;
-	private final ProblemTextParser problemTextParser;
 	private final ConceptExtractorService conceptExtractorService;
-	@Qualifier("redisCache")
-	private final ProblemCacheService problemCacheService;
-	private final PdfExportService pdfExportService;
+	private final ProblemTextParser problemTextParser;
 	private final UserService userService;
 	private final AiService aiService;
+	private final RoundService roundService;
+	private final ProblemRepository problemRepository;
 
 	@Transactional
-	public ProblemGenerationResponse createProblemWithCache(Long userId, List<MultipartFile> conceptFiles,
+	public ProblemGenerationResponse createProblem(Long userId, List<MultipartFile> conceptFiles,
 		List<MultipartFile> formatFiles) {
 		try {
 			// 1. 문제 생성
 			List<ProblemResponse> responses = createProblemWithMl(conceptFiles, formatFiles);
 
-			// 2. 캐시 생성 및 저장
-			String originalFileName = conceptFiles.get(0).getOriginalFilename();
-			String downloadKey = problemCacheService.cacheProblems(responses, originalFileName);
+			// 2. 저장
+			String roundName = conceptFiles.get(0).getOriginalFilename() + '_' + LocalDateTime.now()
+				.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-			log.info("문제 생성 및 캐시 저장 완료: 총 {}개 문제, 다운로드 키: {}", responses.size(), downloadKey);
+			// 3. 회차 생성
+			Round round = Round.create(userId, roundName);
+			roundService.save(round);
 
+			// 4. 문제들을 DB에 저장
+			List<Problem> problems = responses.stream()
+				.map(response -> Problem.create(
+					round.getId(),
+					response.getType(),
+					response.getContent(),
+					response.getDescription(),
+					response.getAnswer()
+				))
+				.collect(Collectors.toList());
+			problemRepository.saveAll(problems);
+
+			//유저 문제 생성 카운트 감소
 			userService.decrementFreeCount(userId);
 
-			return ProblemGenerationResponse.of(downloadKey, responses);
+			return ProblemGenerationResponse.of(roundName, responses);
 
 		} catch (CustomException e) {
 			throw e;
@@ -77,54 +88,35 @@ public class ProblemService {
 			// 1. 문제 생성
 			List<ProblemResponse> responses = aiService.aiPipeLineService(conceptFiles, formatFiles);
 
-			// 2. 캐시 생성 및 저장
-			String originalFileName = conceptFiles.get(0).getOriginalFilename();
-			String downloadKey = problemCacheService.cacheProblems(responses, originalFileName);
+			// 2. 저장
+			String roundName = conceptFiles.get(0).getOriginalFilename() + '_' + LocalDateTime.now()
+				.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-			log.info("문제 생성 및 캐시 저장 완료: 총 {}개 문제, 다운로드 키: {}", responses.size(), downloadKey);
+			// 3. 회차 생성
+			Round round = Round.create(userId, roundName);
+			roundService.save(round);
+
+			// 4. 문제들을 DB에 저장
+			List<Problem> problems = responses.stream()
+				.map(response -> Problem.create(
+					round.getId(),
+					response.getType(),
+					response.getContent(),
+					response.getDescription(),
+					response.getAnswer()
+				))
+				.collect(Collectors.toList());
+			problemRepository.saveAll(problems);
 
 			userService.decrementFreeCount(userId);
 
-			return ProblemGenerationResponse.of(downloadKey, responses);
+			return ProblemGenerationResponse.of(roundName, responses);
 
 		} catch (CustomException e) {
 			throw e;
 		} catch (Exception e) {
 			log.error("문제 생성 및 캐시 저장 중 에러", e);
 			throw new CustomException(ErrorCode.PROBLEM_CREATION_FAILED);
-		}
-	}
-
-	public ProblemDownloadResponse downloadProblemsPdf(String downloadKey) {
-		// 1. 캐시에서 데이터 조회
-		CachedProblemDto cachedData = problemCacheService.getCachedProblems(downloadKey);
-
-		// 2. PDF 생성
-		byte[] pdfData = pdfExportService.exportProblemsToPdf(
-			cachedData.getProblems(),
-			cachedData.getOriginalFileName()
-		);
-
-		// 3. 파일명 생성
-		String fileName = createDownloadFileName();
-
-		log.info("문제 PDF 생성 완료: key={}, 파일명={}, 문제수={}",
-			downloadKey, fileName, cachedData.getProblems().size());
-
-		return ProblemDownloadResponse.builder()
-			.pdfData(pdfData)
-			.fileName(fileName)
-			.originalFileName(cachedData.getOriginalFileName())
-			.build();
-	}
-
-	private String createDownloadFileName() {
-		String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-		try {
-			return URLEncoder.encode("생성된_문제_" + timestamp + ".pdf", "UTF-8")
-				.replaceAll("\\+", "%20");
-		} catch (UnsupportedEncodingException e) {
-			return "problems_" + timestamp + ".pdf";
 		}
 	}
 
@@ -144,12 +136,7 @@ public class ProblemService {
 			String conceptExtraction = result.toFormattedString();
 
 			String problemText = geminiApiClient.generateProblems(conceptExtraction, formatContent);
-			List<Problem> problems = problemTextParser.parseProblemText(problemText);
-
-			List<ProblemResponse> responses = new ArrayList<>();
-			for (Problem problem : problems) {
-				responses.add(ProblemResponse.of(problem));
-			}
+			List<ProblemResponse> responses = problemTextParser.parseProblemText(problemText);
 
 			return responses;
 

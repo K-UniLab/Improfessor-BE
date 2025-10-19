@@ -36,13 +36,14 @@ public class GeminiApiClient {
 		<problems>
 		    <problem>
 		        <number>1</number>
+		        <type>객관식 or 단답형 or 주관식</type>
 		        <content>문제내용</content>
 		        <description>풀이과정</description>
 		        <answer>답</answer>
 		    </problem>
 		    <problem>
 		        <number>2</number>
-		        <content>문제내용</content>
+		        <type>객관식 or 주관식 or 서술형</type>
 		        <description>풀이과정</description>
 		        <answer>답</answer>
 		    </problem>

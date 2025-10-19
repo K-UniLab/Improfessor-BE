@@ -2,18 +2,14 @@ package org.unilab.improfessorbe.domain.problem.controller;
 
 import java.util.List;
 
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.unilab.improfessorbe.domain.problem.dto.ProblemDownloadResponse;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemGenerationResponse;
 import org.unilab.improfessorbe.domain.problem.service.ProblemService;
 import org.unilab.improfessorbe.domain.user.service.UserService;
@@ -54,7 +50,7 @@ public class ProblemController {
 			throw new CustomException(ErrorCode.INSUFFICIENT_FREE_COUNT);
 		}
 
-		ProblemGenerationResponse result = problemService.createProblemWithCache(userId, conceptFiles, formatFiles);
+		ProblemGenerationResponse result = problemService.createProblem(userId, conceptFiles, formatFiles);
 
 		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
 	}
@@ -81,20 +77,5 @@ public class ProblemController {
 			formatFiles);
 
 		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
-	}
-
-	@GetMapping("/download/{downloadKey}")
-	@Operation(summary = "문제 PDF 다운로드")
-	public ResponseEntity<byte[]> downloadProblemsPdf(@PathVariable String downloadKey) {
-
-		ProblemDownloadResponse result = problemService.downloadProblemsPdf(downloadKey);
-
-		return ResponseEntity.ok()
-			.header(HttpHeaders.CONTENT_DISPOSITION,
-				ContentDisposition.attachment()
-					.filename(result.getFileName())
-					.build().toString())
-			.contentType(MediaType.APPLICATION_PDF)
-			.body(result.getPdfData());
 	}
 }
