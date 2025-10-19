@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.unilab.improfessorbe.domain.problem.dto.ProblemGenerationResponse;
+import org.unilab.improfessorbe.domain.problem.dto.RoundProblemResponse;
+import org.unilab.improfessorbe.domain.problem.dto.SavedProblemResponse;
 import org.unilab.improfessorbe.domain.problem.service.ProblemService;
 import org.unilab.improfessorbe.domain.user.service.UserService;
 import org.unilab.improfessorbe.global.common.ApiResponse;
@@ -77,5 +80,29 @@ public class ProblemController {
 			formatFiles);
 
 		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
+	}
+
+	@GetMapping("/rounds/{roundId}")
+	@Operation(summary = "특정 회차의 문제 조회", description = "특정 회차에 속한 모든 문제를 조회합니다")
+	public ResponseEntity<ApiResponse<List<RoundProblemResponse>>> getRoundProblems(
+		@PathVariable Long roundId) {
+		List<RoundProblemResponse> problems = problemService.getProblemsByRoundId(roundId);
+		return ResponseEntity.ok(ApiResponse.success(problems));
+	}
+
+	@GetMapping("/saved/{userId}")
+	@Operation(summary = "저장된 문제 조회")
+	public ResponseEntity<ApiResponse<List<SavedProblemResponse>>> getSavedProblems(
+		@PathVariable Long userId) {
+		List<SavedProblemResponse> problems = problemService.getSavedProblems(userId);
+		return ResponseEntity.ok(ApiResponse.success(problems));
+	}
+
+	@PostMapping("/toggle-save/{problemId}")
+	@Operation(summary = "문제 저장/취소 토글")
+	public ResponseEntity<ApiResponse<Void>> toggleSave(
+		@PathVariable Long problemId) {
+		problemService.toggleProblemSave(problemId);
+		return ResponseEntity.ok(ApiResponse.success(null));
 	}
 }
