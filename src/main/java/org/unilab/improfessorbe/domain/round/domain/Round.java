@@ -19,7 +19,7 @@ public class Round extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Long userId;  // User 대신 Long
+	private Long userId;
 
 	private String name;
 

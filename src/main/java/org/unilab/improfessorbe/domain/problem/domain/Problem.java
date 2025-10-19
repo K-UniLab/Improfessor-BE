@@ -35,7 +35,7 @@ public class Problem extends BaseEntity {
 	@Column(name = "answer", columnDefinition = "TEXT")
 	private String answer;
 
-	private LocalDateTime savedAt;  // 이것만 있으면 됨!
+	private LocalDateTime savedAt;
 
 	private Problem(Long roundId, String type, String content,
 		String description, String answer) {
@@ -51,23 +51,16 @@ public class Problem extends BaseEntity {
 		return new Problem(roundId, type, content, description, answer);
 	}
 
-	// 문제 저장
 	public void save() {
 		this.savedAt = LocalDateTime.now();
 	}
 
-	// 저장 취소
 	public void unsave() {
 		this.savedAt = null;
 	}
 
-	// 저장 여부 확인
 	public boolean isSaved() {
 		return this.savedAt != null;
-	}
-
-	public boolean isDeleted() {
-		return this.getDeletedAt() != null;
 	}
 
 }
