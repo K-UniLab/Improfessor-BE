@@ -72,10 +72,15 @@ public class ProblemService {
 				.collect(toList());
 			problemRepository.saveAll(problems);
 
+			// 5. 저장된 Problem을 ProblemResponse로 변환
+			List<ProblemResponse> problemResponses = problems.stream()
+				.map(ProblemResponse::from)
+				.collect(toList());
+
 			//유저 문제 생성 카운트 감소
 			userService.decrementFreeCount(userId);
 
-			return ProblemGenerationResponse.of(roundName, problems);
+			return ProblemGenerationResponse.of(roundName, problemResponses);
 
 		} catch (CustomException e) {
 			throw e;
@@ -88,18 +93,14 @@ public class ProblemService {
 	public ProblemGenerationResponse createProblemWithAiPipeLine(Long userId, List<MultipartFile> conceptFiles,
 		List<MultipartFile> formatFiles) {
 		try {
-			// 1. 문제 생성
 			List<ProblemResponse> responses = aiService.aiPipeLineService(conceptFiles, formatFiles);
 
-			// 2. 저장
 			String roundName = conceptFiles.get(0).getOriginalFilename() + '_' + LocalDateTime.now()
 				.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-			// 3. 회차 생성
 			Round round = Round.create(userId, roundName);
 			roundService.save(round);
 
-			// 4. 문제들을 DB에 저장
 			List<Problem> problems = responses.stream()
 				.map(response -> Problem.create(
 					round.getId(),
@@ -111,9 +112,13 @@ public class ProblemService {
 				.collect(toList());
 			problemRepository.saveAll(problems);
 
+			List<ProblemResponse> problemResponses = problems.stream()
+				.map(ProblemResponse::from)
+				.collect(toList());
+
 			userService.decrementFreeCount(userId);
 
-			return ProblemGenerationResponse.of(roundName, problems);
+			return ProblemGenerationResponse.of(roundName, problemResponses);
 
 		} catch (CustomException e) {
 			throw e;
