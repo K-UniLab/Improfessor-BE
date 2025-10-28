@@ -36,7 +36,7 @@ public class ProblemController {
 	private final FileLogUtil fileLogUtil;
 	private final UserService userService;
 
-	@PostMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	/*@PostMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@Operation(summary = "문제 생성", description = "(사용중)개념추출, llm, 캐시 적용 모델")
 	public ResponseEntity<ApiResponse<ProblemGenerationResponse>> createProblemWithMl(
 		@PathVariable Long userId,
@@ -57,9 +57,9 @@ public class ProblemController {
 		ProblemGenerationResponse result = problemService.createProblemWithCache(userId, conceptFiles, formatFiles);
 
 		return ResponseEntity.ok(ApiResponse.success(result, result.getMessage()));
-	}
+	}*/
 
-	@PostMapping(value = "/ai/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@Operation(summary = "문제 생성", description = "(사용중)개념추출, llm, 캐시 적용 모델")
 	public ResponseEntity<ApiResponse<ProblemGenerationResponse>> createProblemWithAiPipeLine(
 		@PathVariable Long userId,
